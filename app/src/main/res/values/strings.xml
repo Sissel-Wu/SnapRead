@@ -2,6 +2,16 @@
     <string name="app_name">SnapRead</string>
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="long_text">
+        近日，中央纪委通报了6起执纪审查中发现的中管干部违反中央八项规定精神问题，包括接受宴请、公款旅游、违规使用公车等内容。\n十八大后，“逢节必令”已成为中国反腐的常态化举措，形成一套禁令、举报、查处、通报的节日反腐“组合拳”。
+        然而，在刚刚过去的中秋节前后，屡禁不止的送礼宴请又在层层监管下使出了新花招，网约车只拉东西不拉人，成送礼“新宠”。\n“最近，我都快成快递员了。”在中秋节后的一次乘车过程中，一位姓徐的网络约车司机这样说道。原来，中秋节前一周左右，徐师傅曾接到过一个莫名其妙的单子，客人叫车后人不上车，只是放一些东西在车上。之后让徐师傅按照指定的地址把‘货’送到，一连4单皆是如此。
+        由于接单后的送货地址都是企事业单位，徐师傅推断，这应该是节前送礼。“来取东西的一般都是企事业单位里的小年轻。我曾经问过下订单的人，能否送到大门口的传达室，都被拒绝了，下订单的人要求必须送到对方手上。”徐师傅这样说道。
+    </string>
+
+    <string name="collections">收藏</string>
+    <string name="tag">标签</string>
+    <string name="recommendation">推荐</string>
+    <string name="about">关于</string>
+
 </resources>

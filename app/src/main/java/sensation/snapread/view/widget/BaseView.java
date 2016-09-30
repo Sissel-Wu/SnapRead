@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sensation.snapread;
+package sensation.snapread.view.widget;
 
 public interface BaseView<T> {
 
