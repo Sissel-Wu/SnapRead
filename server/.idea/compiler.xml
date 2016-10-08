@@ -23,10 +23,12 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="server" />
+        <module name="SnapReadServer" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="server" target="1.8" />
+      <module name="SnapReadServer" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
