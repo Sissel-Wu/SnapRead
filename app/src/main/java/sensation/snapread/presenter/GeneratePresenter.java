@@ -1,5 +1,7 @@
 package sensation.snapread.presenter;
 
+import android.util.Log;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -152,6 +154,7 @@ public class GeneratePresenter implements GenerateContract.Presenter {
 
     @Override
     public void searchPost(String keyword) {
+        Log.d("SnapRead", "searchPost: " + keyword);
         generateModel.searchPost(new Subscriber<Response<GeneratePO>>() {
             @Override
             public void onCompleted() {

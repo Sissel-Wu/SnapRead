@@ -28,6 +28,7 @@ public class PostPresenter implements PostContract.Presenter {
 
     @Override
     public void getPost(final String postID) {
+        update();
         postModel.getPost(new Subscriber<Response<ContentPO>>() {
             @Override
             public void onCompleted() {

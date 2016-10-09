@@ -23,6 +23,10 @@ public interface SearchContract {
 
         void deleteFail();
 
+        void noData();
+
+        void showInternetError();
+
     }
 
     interface Presenter extends BasePresenter {

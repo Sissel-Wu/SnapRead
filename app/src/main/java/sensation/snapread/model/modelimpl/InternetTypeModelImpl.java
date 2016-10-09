@@ -8,7 +8,6 @@ import rx.schedulers.Schedulers;
 import sensation.snapread.model.modelinterface.TypeModel;
 import sensation.snapread.model.response.Response;
 import sensation.snapread.model.service.AddTagService;
-import sensation.snapread.model.service.DeleteTagService;
 import sensation.snapread.model.service.TagService;
 import sensation.snapread.model.vopo.TypePO;
 
@@ -37,13 +36,4 @@ public class InternetTypeModelImpl extends InternetModelImpl implements TypeMode
                 .subscribe(subscriber);
     }
 
-    @Override
-    public void deleteType(Subscriber<Response<Object>> subscriber, String tagID) {
-        DeleteTagService deleteTagService = retrofit.create(DeleteTagService.class);
-        deleteTagService.deleteTag(tagID)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber);
-    }
 }

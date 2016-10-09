@@ -171,6 +171,16 @@ public class SearchActivity extends SwipeBackActivity implements SearchContract.
     }
 
     @Override
+    public void noData() {
+        Toast.makeText(SearchActivity.this, "没有搜索到相关内容~", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showInternetError() {
+        Toast.makeText(SearchActivity.this, "网络错误，请检查设置~", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         if (type.equals(ViewTool.TYPE_TAG)) {

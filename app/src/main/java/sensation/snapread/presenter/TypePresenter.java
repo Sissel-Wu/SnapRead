@@ -74,8 +74,12 @@ public class TypePresenter implements TypeContract.Presenter {
 
             @Override
             public void onNext(Response<Object> objectResponse) {
+                if (objectResponse != null) {
+                    view.addSuccess();
+                } else {
+                    view.addFail();
+                }
                 view.hideLoading();
-                view.addSuccess();
             }
         }, PresenterCache.getInstance().getUserID(), typeName, description, imgPath);
     }

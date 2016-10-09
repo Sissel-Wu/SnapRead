@@ -3,48 +3,119 @@ package sensation.snapread.presenter;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscriber;
 import sensation.snapread.contract.SearchContract;
+import sensation.snapread.model.ModelRepository;
+import sensation.snapread.model.RepositoryFactory;
+import sensation.snapread.model.modelinterface.SearchModel;
+import sensation.snapread.model.response.Response;
 import sensation.snapread.model.vopo.CollectionListItemVO;
+import sensation.snapread.model.vopo.CollectionListPO;
+import sensation.snapread.view.widget.ViewTool;
 
 /**
  * Created by Alan on 2016/10/8.
  */
 public class SearchPresenter implements SearchContract.Presenter {
 
+    ModelRepository repository;
+    SearchModel searchModel;
     SearchContract.View searchView;
 
     public SearchPresenter(SearchContract.View searchView) {
+        update();
         this.searchView = searchView;
         searchView.setPresenter(this);
     }
 
     @Override
     public void getSearchResult(String keyword, String type) {
+        update();
         searchView.showLoading();
-        final String imgUrl1 = "https://camo.githubusercontent.com/5f260ff56ba9dd4accf22a9572a9874556704bf9/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f333037323536362d386564663232356566306266646263332e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430",
-                imgUrl2 = "https://github.com/Clans/FloatingActionButton/raw/master/screenshots/main_screen.png";
-        searchView.showLoading();
-        List<CollectionListItemVO> collectionList = new ArrayList<>();
-        CollectionListItemVO vo1 = new CollectionListItemVO("001", "Design", "Material Design", "Material Design is popular nowadays", "http://www.baidu.com", imgUrl1),
-                vo2 = new CollectionListItemVO("001", "Design", "Material Design", "Material Design is popular nowadays", "http://www.baidu.com", ""),
-                vo3 = new CollectionListItemVO("001", "Design", "Material Design", "Material Design is popular nowadays", "http://www.baidu.com", ""),
-                vo4 = new CollectionListItemVO("001", "Design", "Material Design", "Material Design is popular nowadays", "http://www.baidu.com", imgUrl2),
-                vo5 = new CollectionListItemVO("001", "Book", "Nice Book", "Material Design is popular nowadays", "http://www.baidu.com", "");
-        collectionList.add(vo1);
-        collectionList.add(vo2);
-        collectionList.add(vo3);
-        collectionList.add(vo4);
-        collectionList.add(vo5);
-        searchView.showSearchResult(collectionList);
-        searchView.hideLoading();
+        if (type.equals(ViewTool.TYPE_TAG)) {
+            searchModel.getTagContent(new Subscriber<Response<List<CollectionListPO>>>() {
+                @Override
+                public void onCompleted() {
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    searchView.hideLoading();
+                    searchView.showInternetError();
+                }
+
+                @Override
+                public void onNext(Response<List<CollectionListPO>> listResponse) {
+                    List<CollectionListPO> collectionList = listResponse.getData();
+                    List<CollectionListItemVO> collectionListItem = new ArrayList<>();
+                    for (CollectionListPO po : collectionList) {
+                        collectionListItem.add(po.toVO());
+                    }
+                    searchView.hideLoading();
+                    searchView.showSearchResult(collectionListItem);
+                }
+            }, keyword);
+        } else {
+            searchModel.getSearchContent(new Subscriber<Response<List<CollectionListPO>>>() {
+                @Override
+                public void onCompleted() {
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    searchView.hideLoading();
+                    searchView.showInternetError();
+                }
+
+                @Override
+                public void onNext(Response<List<CollectionListPO>> listResponse) {
+                    List<CollectionListPO> collectionList = listResponse.getData();
+                    if (collectionList.size() == 0) {
+                        searchView.noData();
+                    } else {
+                        List<CollectionListItemVO> collectionListItem = new ArrayList<>();
+                        for (CollectionListPO po : collectionList) {
+                            collectionListItem.add(po.toVO());
+                        }
+                        searchView.showSearchResult(collectionListItem);
+                    }
+                    searchView.hideLoading();
+                }
+            }, keyword);
+        }
     }
 
     @Override
     public void deleteTag(String tagID) {
-        searchView.deleteSuccess();
+        repository = RepositoryFactory.getInternetRepository();
+        searchModel = repository.getSearchModel();
+        searchModel.deleteTag(new Subscriber<Response<Object>>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                searchView.deleteFail();
+            }
+
+            @Override
+            public void onNext(Response<Object> objectResponse) {
+                if (objectResponse != null) {
+                    searchView.deleteSuccess();
+                } else {
+                    searchView.deleteFail();
+                }
+            }
+        }, tagID);
     }
 
     @Override
     public void start() {
+    }
+
+    private void update() {
+        repository = RepositoryFactory.getDBRepository();
+        searchModel = repository.getSearchModel();
     }
 }

@@ -418,8 +418,9 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
             anim.setDuration(300);
             fullImageView.startAnimation(anim);
             fullImageView.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 
     @Override

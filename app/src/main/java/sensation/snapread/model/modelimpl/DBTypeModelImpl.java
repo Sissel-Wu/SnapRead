@@ -35,9 +35,4 @@ public class DBTypeModelImpl implements TypeModel {
                 .subscribe(subscriber);
     }
 
-    @Override
-    public void deleteType(Subscriber<Response<Object>> subscriber, String tagID) {
-        subscriber.onNext(null);
-    }
-
 }

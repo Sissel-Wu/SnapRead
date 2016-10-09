@@ -14,5 +14,4 @@ public interface TypeModel {
 
     void getTypeList(Subscriber<Response<List<TypePO>>> subscriber, String userID);
 
-    void deleteType(Subscriber<Response<Object>> subscriber, String tagID);
 }
