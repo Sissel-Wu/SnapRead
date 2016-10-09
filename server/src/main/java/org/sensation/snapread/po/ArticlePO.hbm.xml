@@ -24,7 +24,7 @@
             <column name="post_url" />
         </property>
         <property name="post_img" type="java.lang.String">
-            <column name="feature" />
+            <column name="post_img" />
         </property>
         <property name="feature" type="java.lang.String">
             <column name="feature" />
