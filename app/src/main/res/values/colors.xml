@@ -7,4 +7,6 @@
     <color name="colorAccent">#ffb272</color>
     <color name="safe">#0cbb6b</color>
     <color name="warning">#ffa050</color>
+    <color name="background">#8d424242</color>
+    <color name="light">#f7f6f6</color>
 </resources>

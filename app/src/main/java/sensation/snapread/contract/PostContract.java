@@ -1,18 +1,22 @@
 package sensation.snapread.contract;
 
 import sensation.snapread.BasePresenter;
+import sensation.snapread.model.vopo.PostVO;
 import sensation.snapread.view.widget.BaseView;
 
 /**
- * 新建合同
- * Created by Alan on 2016/9/28.
+ * 文章合同
+ * Created by Alan on 2016/10/7.
  */
-public interface CreateContract {
+public interface PostContract {
     interface View extends BaseView<Presenter> {
+
+        void showPost(PostVO postVO);
+
 
     }
 
     interface Presenter extends BasePresenter {
-        
+        void getPost(String postID);
     }
 }

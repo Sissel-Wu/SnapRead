@@ -7,7 +7,10 @@
     <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
         app:elevation="2dp">
 
         <RelativeLayout
@@ -20,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
-                android:padding="8dp"
+                android:padding="5dp"
                 android:text="设计"
                 android:textColor="@android:color/white" />
 
@@ -44,7 +47,7 @@
                 android:visibility="gone" />
 
             <ImageView
-                android:id="@+id/post_image"
+                android:id="@+id/type_image"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_below="@+id/tag"
@@ -53,10 +56,10 @@
                 android:src="@drawable/material" />
 
             <TextView
-                android:id="@+id/post_title"
-                android:layout_width="match_parent"
+                android:id="@+id/type_title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/post_image"
+                android:layout_below="@+id/type_image"
                 android:layout_marginTop="10dp"
                 android:text="Material Design"
                 android:textColor="@android:color/black"
@@ -66,7 +69,7 @@
                 android:id="@+id/post_preview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/post_title"
+                android:layout_below="@+id/type_title"
                 android:layout_marginTop="5dp"
                 android:text="我们挑战自我，为用户创造了崭新的视觉设计语言。与此同时，新的设计语言除了遵循经典设计定则，还汲取了最新的科技，秉承了创新的设计理念。这就是原质化设计(Material Design)..." />
         </RelativeLayout>

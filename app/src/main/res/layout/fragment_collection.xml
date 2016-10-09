@@ -1,5 +1,4 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,15 +16,31 @@
             android:divider="@android:color/transparent" />
     </sensation.snapread.view.widget.ScrollChildSwipeRefreshLayout>
 
-    <com.github.clans.fab.FloatingActionButton
-        android:id="@+id/fab"
+    <!--<com.github.clans.fab.FloatingActionButton-->
+    <!--android:id="@+id/fab"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom|end"-->
+    <!--android:layout_marginBottom="@dimen/fab_margin_bottom"-->
+    <!--android:layout_marginEnd="@dimen/fab_margin"-->
+    <!--android:src="@drawable/fab_add"-->
+    <!--app:fab_colorNormal="@color/colorAccent"-->
+    <!--app:fab_colorPressed="@color/colorAccent"-->
+    <!--app:rippleColor="@color/colorAccent" />-->
+
+    <TextView
+        android:id="@+id/delete_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="@dimen/fab_margin_bottom"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:src="@drawable/fab_add"
-        app:fab_colorNormal="@color/colorAccent"
-        app:fab_colorPressed="@color/colorAccent"
-        app:rippleColor="@color/colorAccent" />
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/circle"
+        android:elevation="5dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:text="删除"
+        android:textColor="@android:color/white"
+        android:textSize="17sp"
+        android:visibility="gone" />
 </android.support.design.widget.CoordinatorLayout>

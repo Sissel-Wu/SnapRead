@@ -1,23 +1,36 @@
 package sensation.snapread.model.vopo;
 
+import org.litepal.crud.DataSupport;
+
 /**
  * Created by Alan on 2016/9/30.
  */
-public class PostPO {
+public class PostPO extends DataSupport{
     String postID;
     String title;
     String type;
     String content;
-    String imgUrl;
+    String imageBase64;
     String url;
 
-    public PostPO(String postID, String title, String type, String content, String imgUrl, String url) {
+    public PostPO() {
+    }
+
+    public PostPO(String postID, String title, String type, String content, String imageBase64, String url) {
         this.postID = postID;
         this.title = title;
         this.type = type;
         this.content = content;
-        this.imgUrl = imgUrl;
+        this.imageBase64 = imageBase64;
         this.url = url;
+    }
+
+    public String getImageBase64() {
+        return imageBase64;
+    }
+
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
     }
 
     public String getPostID() {
@@ -50,14 +63,6 @@ public class PostPO {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public String getImgUrl() {
-        return imgUrl;
-    }
-
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
     }
 
     public String getUrl() {

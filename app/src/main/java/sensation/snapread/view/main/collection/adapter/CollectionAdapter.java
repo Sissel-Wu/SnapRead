@@ -48,13 +48,13 @@ public class CollectionAdapter extends ArrayAdapter<CollectionListItemVO> {
         TextView mTypeView = (TextView) view.findViewById(R.id.tag);
         mTypeView.setText(item.getType());
 
-        TextView mTitleView = (TextView) view.findViewById(R.id.post_title);
+        TextView mTitleView = (TextView) view.findViewById(R.id.type_title);
         mTitleView.setText(item.getTitle());
 
         TextView mDesView = (TextView) view.findViewById(R.id.post_preview);
         mDesView.setText(item.getDescription());
 
-        ImageView mImgView = (ImageView) view.findViewById(R.id.post_image);
+        ImageView mImgView = (ImageView) view.findViewById(R.id.type_image);
         if (item.getImgUrl().equals("")) {
             mImgView.setVisibility(View.GONE);
         } else {

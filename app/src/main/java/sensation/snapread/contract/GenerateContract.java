@@ -4,6 +4,7 @@ import java.util.List;
 
 import sensation.snapread.BasePresenter;
 import sensation.snapread.model.vopo.GenerateVO;
+import sensation.snapread.model.vopo.PostVO;
 import sensation.snapread.view.widget.BaseView;
 
 /**
@@ -19,14 +20,24 @@ public interface GenerateContract {
         void showTypes(List<String> types);
 
         void showPost(GenerateVO generateVO);
+
+        void saveSuccess();
+
+        void saveFail();
+
+        void showImageError();
+
+        void showInternetError();
     }
 
     interface Presenter extends BasePresenter {
+
+        void ocr(String path);
 
         void getTypes(String userID);
 
         void searchPost(String postID);
 
-        void savePost(GenerateVO generateVO);
+        void savePost(PostVO postVO);
     }
 }

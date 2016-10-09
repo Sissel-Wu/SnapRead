@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sensation.snapread.contract.CollectionContract;
-import sensation.snapread.model.InternetModelRepository;
-import sensation.snapread.model.modelinterface.InternetCollectionModel;
+import sensation.snapread.model.ModelRepository;
+import sensation.snapread.model.modelinterface.CollectionModel;
 import sensation.snapread.model.vopo.CollectionListItemVO;
 
 /**
@@ -14,11 +14,11 @@ import sensation.snapread.model.vopo.CollectionListItemVO;
  */
 public class CollectionPresenter implements CollectionContract.Presenter {
 
-    InternetModelRepository repository;
-    InternetCollectionModel collectionModel;
+    ModelRepository repository;
+    CollectionModel collectionModel;
     CollectionContract.View collectionView;
 
-    public CollectionPresenter(InternetModelRepository repository, CollectionContract.View collectionView) {
+    public CollectionPresenter(ModelRepository repository, CollectionContract.View collectionView) {
         this.repository = repository;
         collectionModel = repository.getCollectionModel();
         this.collectionView = collectionView;
@@ -50,7 +50,7 @@ public class CollectionPresenter implements CollectionContract.Presenter {
                 vo2 = new CollectionListItemVO("001", "Design", "Material Design", "Material Design is popular nowadays", "http://www.baidu.com", ""),
                 vo3 = new CollectionListItemVO("001", "Design", "Material Design", "Material Design is popular nowadays", "http://www.baidu.com", ""),
                 vo4 = new CollectionListItemVO("001", "Design", "Material Design", "Material Design is popular nowadays", "http://www.baidu.com", imgUrl2),
-                vo5 = new CollectionListItemVO("001", "Design", "Material Design", "Material Design is popular nowadays", "http://www.baidu.com", "");
+                vo5 = new CollectionListItemVO("001", "Book", "Nice Book", "Material Design is popular nowadays", "http://www.baidu.com", "");
         collectionList.add(vo1);
         collectionList.add(vo2);
         collectionList.add(vo3);

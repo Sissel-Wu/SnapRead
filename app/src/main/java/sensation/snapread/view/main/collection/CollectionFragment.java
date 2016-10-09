@@ -9,14 +9,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +23,16 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.zhanghai.android.materialprogressbar.IndeterminateProgressDrawable;
 import sensation.snapread.R;
 import sensation.snapread.contract.CollectionContract;
 import sensation.snapread.model.vopo.CollectionListItemVO;
 import sensation.snapread.view.NavigationInterface;
 import sensation.snapread.view.main.collection.adapter.CollectionAdapter;
+import sensation.snapread.view.post.PostActivity;
 import sensation.snapread.view.widget.ScrollChildSwipeRefreshLayout;
+import sensation.snapread.view.widget.ViewTool;
 
 /**
  * 收藏碎片
@@ -42,11 +43,14 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
     @BindView(R.id.collection_list)
     ListView mCollectionListView;
 
-    @BindView(R.id.fab)
-    com.github.clans.fab.FloatingActionButton fab;
+//    @BindView(R.id.fab)
+//    com.github.clans.fab.FloatingActionButton fab;
 
     @BindView(R.id.refresh_layout)
     ScrollChildSwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.delete_btn)
+    TextView deleteView;
 
     NavigationInterface navigationInterface;
     CollectionContract.Presenter presenter;
@@ -79,6 +83,16 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
         initRefreshLayout();
     }
 
+//    @OnClick(R.id.fab)
+//    void newPost() {
+//        GenerateActivity.startActivity(getActivity());
+//    }
+
+    @OnClick(R.id.delete_btn)
+    void deletePost() {
+        //TODO 删除deleteList中的collection
+    }
+
     private void initListView() {
         //滚动事件
         mCollectionListView.setOnTouchListener(new View.OnTouchListener() {
@@ -86,26 +100,27 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                if (deleteView.getVisibility() == View.GONE) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            startY = event.getY();
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            endY = event.getY();
+                            if (endY > startY + 5) {
+                                navigationInterface.showNavigation();
+//                                fab.show(true);
 
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        startY = event.getY();
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        endY = event.getY();
-                        if (endY > startY + 5) {
-                            navigationInterface.showNavigation();
-                            fab.show(true);
-
-                        } else if (endY < startY) {
-                            navigationInterface.hideNavigation();
-                            fab.hide(true);
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        startY = 0;
-                        endY = 0;
-                        break;
+                            } else if (endY < startY) {
+                                navigationInterface.hideNavigation();
+//                                fab.hide(true);
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            startY = 0;
+                            endY = 0;
+                            break;
+                    }
                 }
                 return false;
             }
@@ -151,7 +166,20 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
                         mCollectionListView.invalidate();
 
                     } else {
-                        //TODO 进入文章
+                        //进入文章
+                        if (!item.getImgUrl().equals("")) {
+                            PostActivity.
+                                    startActivity(getActivity(),
+                                            item.getCollectionID(),
+                                            item.getTitle(),
+                                            item.getImgUrl());
+                        } else {
+                            PostActivity.
+                                    startActivity(getActivity(),
+                                            item.getCollectionID(),
+                                            item.getTitle(),
+                                            "");
+                        }
                     }
                 }
             }
@@ -170,6 +198,11 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
 
                     collectionAdapter.notifyDataSetChanged();
                     mCollectionListView.invalidate();
+
+                    navigationInterface.hideNavigation();
+//                    fab.hide(true);
+                    deleteView.setVisibility(View.VISIBLE);
+                    deleteView.startAnimation(ViewTool.getAnim(deleteView, 1, 0));
                 }
                 return true;
             }
@@ -182,6 +215,12 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
 
                 if (mCollectionListView.getChoiceMode() == AbsListView.CHOICE_MODE_MULTIPLE) {
                     if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+                        navigationInterface.showNavigation();
+//                        fab.show(true);
+                        deleteView.startAnimation(ViewTool.getAnim(deleteView, 2, 0));
+                        deleteView.setVisibility(View.GONE);
+
                         mCollectionListView.clearChoices();
                         mCollectionListView.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
                         collectionAdapter.notifyDataSetChanged();
@@ -277,41 +316,12 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        presenter.start();
+                        if (presenter != null) {
+                            presenter.start();
+                        }
                     }
                 }, 100);
             }
         }
-    }
-
-    /**
-     * 隐藏显示动画
-     *
-     * @param view
-     * @param inOrOut
-     * @param offset
-     * @return
-     */
-    private Animation getAnim(View view, int inOrOut, int offset) {
-        float from, to;
-        if (inOrOut == 1) {
-            from = 0;
-            if (view != null) {
-                to = -(view.getHeight() + offset);
-            } else {
-                to = -offset;
-            }
-        } else {
-            if (view != null) {
-                from = -(view.getHeight() + offset);
-            } else {
-                from = -offset;
-            }
-            to = 0;
-        }
-        TranslateAnimation anim = new TranslateAnimation(0, 0, from, to);
-        anim.setDuration(300);
-        anim.setInterpolator(new DecelerateInterpolator());
-        return anim;
     }
 }

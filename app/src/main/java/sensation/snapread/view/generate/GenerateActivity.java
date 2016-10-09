@@ -1,9 +1,11 @@
 package sensation.snapread.view.generate;
 
+import android.app.Activity;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,6 +21,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -30,23 +33,28 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import sensation.snapread.R;
 import sensation.snapread.contract.GenerateContract;
+import sensation.snapread.model.RepositoryFactory;
 import sensation.snapread.model.vopo.GenerateVO;
+import sensation.snapread.model.vopo.PostPO;
+import sensation.snapread.model.vopo.PostVO;
+import sensation.snapread.presenter.GeneratePresenter;
 import sensation.snapread.view.main.MainActivity;
+import sensation.snapread.view.widget.ViewTool;
 
 public class GenerateActivity extends AppCompatActivity implements GenerateContract.View {
     private static final int SELECT_PHOTO = 2;
+    private static final String ARG_INTENT = "intent";
 
     @BindView(R.id.generate_btn)
     TextView mGenerateBtn;
@@ -60,9 +68,6 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
     @BindView(R.id.type)
     Spinner mTypeSpinner;
 
-    @BindView(R.id.content)
-    EditText mContentView;
-
     @BindView(R.id.scroll_view)
     ScrollView scrollView;
 
@@ -75,10 +80,26 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
     @BindView(R.id.app_bar)
     AppBarLayout appBarLayout;
 
+    @BindView(R.id.image_overlay)
+    ImageView imageOverlayView;
+
+    @BindView(R.id.full_image)
+    ImageView fullImageView;
+
+    @BindView(R.id.web_content)
+    WebView webView;
+
     float startY = 0, endY = 0;
     MaterialDialog waitDialog;
     GenerateVO generateVO;
     ArrayAdapter<String> adapter;
+    Uri mImageUri = null;
+    GenerateContract.Presenter presenter;
+
+    public static void startActivity(Activity activity) {
+        Intent intent = new Intent(activity, GenerateActivity.class);
+        activity.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,55 +107,21 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
         setContentView(R.layout.activity_generate);
         ButterKnife.bind(this);
 
-        showLoading("正在识别...");
-        init();
+        presenter = new GeneratePresenter(RepositoryFactory.getInternetRepository(), this);
+        mGenerateBtn.requestFocus();
+        initFetch();
         initViews();
+
+        //stub
         List<String> list = new ArrayList<>();
         list.add("设计");
         list.add("学习");
         showTypes(list);
     }
 
-    @Override
-    public void showLoading(String info) {
-        if (waitDialog == null) {
-            waitDialog =
-                    new MaterialDialog.Builder(this)
-                            .title("请等待")
-                            .cancelable(false)
-                            .progress(true, 0)
-                            .build();
-        }
-        waitDialog.setContent(info);
-        waitDialog.show();
-
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                hideLoading();
-            }
-        }, 1500);
-    }
-
-    public void hideLoading() {
-        waitDialog.dismiss();
-    }
-
-    @Override
-    public void showTypes(List<String> types) {
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mTypeSpinner.setAdapter(adapter);
-        adapter.add("+ 创建新标签");
-    }
-
-    @Override
-    public void showPost(GenerateVO generateVO) {
-        this.generateVO = generateVO;
-        mTitleView.setText(generateVO.getTitle());
-        mUrlView.setText(generateVO.getUrl());
-        mContentView.setText(generateVO.getContent());
+    private void initFetch() {
+        fetchFromPath();
+        fetchFromMimeType();
     }
 
     private void initViews() {
@@ -142,7 +129,47 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
         initScrollView();
         initSpinner();
         initToolBar();
+        initImageOverlay();
+        initFullImageView();
+    }
 
+    private void initFullImageView() {
+        imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                fullImageView.setImageDrawable(imageView.getDrawable());
+                if (fullImageView.getVisibility() == View.GONE) {
+                    fullImageView.setVisibility(View.VISIBLE);
+                    AlphaAnimation anim = new AlphaAnimation(0, 1);
+                    anim.setDuration(300);
+                    fullImageView.startAnimation(anim);
+                }
+                return true;
+            }
+        });
+        fullImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fullImageView.getVisibility() == View.VISIBLE) {
+                    AlphaAnimation anim = new AlphaAnimation(1, 0);
+                    anim.setDuration(300);
+                    fullImageView.startAnimation(anim);
+                    fullImageView.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    private void initImageOverlay() {
+        final AlphaAnimation anim = new AlphaAnimation(1, 0);
+        anim.setDuration(500);
+        imageOverlayView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                imageOverlayView.startAnimation(anim);
+                imageOverlayView.setVisibility(View.GONE);
+            }
+        }, 2500);
     }
 
     private void initToolBar() {
@@ -175,6 +202,13 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
                                         adapter.notifyDataSetChanged();
                                         mTypeSpinner.setSelection(adapter.getCount() - 2);
                                     }
+                                    dialog.dismiss();
+                                }
+                            })
+                            .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    mTypeSpinner.setSelection(0);
                                     dialog.dismiss();
                                 }
                             })
@@ -227,15 +261,11 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
         });
     }
 
-    private void init() {
-        fetchFromPath();
-        fetchFromMimeType();
-    }
-
     /**
      * 从mimetype分享中获取uri
      */
     private void fetchFromMimeType() {
+        String path = "";
         Intent intent = getIntent();
         if (intent != null) {
             String action = intent.getAction();
@@ -243,18 +273,26 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
 
             if (type != null) {
                 if (type.startsWith("image/")) {
-                    Uri imageUri = null;
                     if (Intent.ACTION_VIEW.equals(action)) {
-                        imageUri = intent.getData();
+                        mImageUri = intent.getData();
                     } else if (Intent.ACTION_SEND.equals(action)) {
-                        imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                        mImageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
                     }
-                    if (imageUri != null) {
-                        try {
-                            imageView.setImageBitmap(BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri)));
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
+                    if (mImageUri != null) {
+                        Cursor cursor = getContentResolver().query(mImageUri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+                        if (null != cursor) {
+                            if (cursor.moveToFirst()) {
+                                int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                                if (index > -1) {
+                                    path = cursor.getString(index);
+                                }
+                            }
+                            cursor.close();
                         }
+                        if (!path.equals("")) {
+                            presenter.ocr(path);
+                        }
+
                     } else {
                         Toast.makeText(GenerateActivity.this, "图片已被删除啦~", Toast.LENGTH_SHORT).show();
                         finish();
@@ -270,7 +308,6 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
     private void fetchFromPath() {
         if (getIntent() != null) {
             String imagePath = getIntent().getStringExtra("imagePath");
-            Uri mImageUri = null;
             Uri mUri = Uri.parse("content://media/external/images/media");
 
             if (imagePath != null) {
@@ -291,12 +328,8 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
                     }
                     cursor.moveToNext();
                 }
-                if (mImageUri != null) {
-                    try {
-                        imageView.setImageBitmap(BitmapFactory.decodeStream(getContentResolver().openInputStream(mImageUri)));
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
+                if (!imagePath.equals("")) {
+                    presenter.ocr(imagePath);
                 } else {
                     Toast.makeText(GenerateActivity.this, "图片已被删除啦~", Toast.LENGTH_SHORT).show();
                     finish();
@@ -305,11 +338,89 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
         }
     }
 
-    @OnClick(R.id.generate_btn)
-    void generate() {
+    @Override
+    public void showLoading(String info) {
+        if (waitDialog == null) {
+            waitDialog =
+                    new MaterialDialog.Builder(this)
+                            .title("请等待")
+                            .canceledOnTouchOutside(false)
+                            .progress(true, 0)
+                            .build();
+        }
+        waitDialog.setContent(info);
+        waitDialog.show();
+    }
+
+    @Override
+    public void hideLoading() {
+        waitDialog.dismiss();
+    }
+
+    @Override
+    public void showTypes(List<String> types) {
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mTypeSpinner.setAdapter(adapter);
+        adapter.add("+ 创建新标签");
+    }
+
+    @Override
+    public void showPost(GenerateVO generateVO) {
+        this.generateVO = generateVO;
+        mTitleView.setText(generateVO.getTitle());
+        mUrlView.setText(generateVO.getUrl());
+        for (int i = 0; i < mTypeSpinner.getCount(); i++) {
+            if (((String) mTypeSpinner.getItemAtPosition(i)).equals(generateVO.getType())) {
+                mTypeSpinner.setSelection(i);
+            }
+        }
+        if (!generateVO.getImgUrl().equals("")) {
+            Glide.with(this).load(generateVO.getImgUrl()).into(imageView);
+        }
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDefaultTextEncodingName("utf-8");
+        webView.loadData(generateVO.getContent(), "text/html", "utf-8");
+    }
+
+    @Override
+    public void saveSuccess() {
+        Toast.makeText(GenerateActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void saveFail() {
+        Toast.makeText(GenerateActivity.this, "保存失败，请检查网络~", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showImageError() {
+        Toast.makeText(GenerateActivity.this, "图片加载失败，重新截个图~", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showInternetError() {
+        Toast.makeText(GenerateActivity.this, "网络有点问题哦~", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.generate_btn)
+    void generate() {
+        //添加到本地数据库
+        String content = generateVO.getContent();
+        String postID = generateVO.getPostID();
+        String title = mTitleView.getText().toString();
+        String url = mUrlView.getText().toString();
+        String type = (String) mTypeSpinner.getSelectedItem();
+        Drawable imageDrawable = imageView.getDrawable();
+        PostPO postPO = new PostPO(postID, title, type, content, ViewTool.drawableToByte(imageDrawable), url);
+        postPO.save();
+
+        //发送网络请求
+        PostVO postVO = new PostVO(postID, title, type, content, ViewTool.uri2path(this, mImageUri), url);
+        presenter.savePost(postVO);
     }
 
     @OnClick(R.id.image)
@@ -325,6 +436,7 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
         if (requestCode == SELECT_PHOTO) {
             if (resultCode == RESULT_OK) {
                 try {
+                    mImageUri = data.getData();
                     imageView.setImageBitmap(BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData())));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();

@@ -1,6 +1,9 @@
 package sensation.snapread.contract;
 
+import java.util.List;
+
 import sensation.snapread.BasePresenter;
+import sensation.snapread.model.vopo.CollectionListItemVO;
 import sensation.snapread.view.widget.BaseView;
 
 /**
@@ -10,9 +13,16 @@ import sensation.snapread.view.widget.BaseView;
 public interface SearchContract {
     interface View extends BaseView<Presenter> {
 
+        void showSearchResult(List<CollectionListItemVO> searchList);
+
+        void showLoading();
+
+        void hideLoading();
+
     }
 
     interface Presenter extends BasePresenter {
 
+        void getSearchResult(String keyword, String type);
     }
 }
