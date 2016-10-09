@@ -1,4 +1,4 @@
-package businesslogic.consts;
+package org.sensation.snapread.businesslogic.consts;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -40,10 +40,27 @@ public class Wechat extends Vendor
         return titleElement.ownText();
     }
 
+    private Element extractMainBody(Document document)
+    {
+        Element mainBody = document.getElementById(mainBody_ID);
+        return mainBody;
+    }
+
     @Override
     public String getMainBody(String uri, Document document)
     {
-        Element mainBody = document.getElementById(mainBody_ID);
-        return mainBody.toString();
+        return extractMainBody(document).toString();
+    }
+
+    @Override
+    public String getPostImage(String uri, Document document)
+    {
+        Element mainBody = extractMainBody(document);
+
+        Element imageElement = mainBody.getElementsByTag("img").first();
+
+        String src = imageElement.attr("src");
+        return "".equals(src) ?
+                imageElement.attr("org.sensation.snapread.data-src") : src;
     }
 }

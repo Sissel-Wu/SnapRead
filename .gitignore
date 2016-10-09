@@ -6,6 +6,9 @@
 .DS_Store
 /build
 /captures
+/server/answer
 **/.idea/
 **/target/
 server/.idea/
+server/src/main/resources/application.properties
+server/src/hibernate.cfg.xml

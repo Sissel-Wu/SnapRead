@@ -1,28 +1,27 @@
-package businesslogic;
+package org.sensation.snapread.businesslogic;
 
-import businesslogic.consts.Vendor;
-import businesslogic.consts.Wechat;
-import businesslogic.consts.Zhihu;
+import org.sensation.snapread.businesslogic.consts.Vendor;
+import org.sensation.snapread.businesslogic.consts.Wechat;
+import org.sensation.snapread.businesslogic.consts.Zhihu;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.sensation.snapread.po.ArticlePO;
 import org.springframework.web.client.RestTemplate;
 
 /**
  * 爬取页面
  * Created by Sissel on 2016/10/7.
  */
-public class webCrawler
+public class WebCrawler
 {
-    public static JSONObject searchInSogou(String keyWords, Vendor vendor)
+    public static ArticlePO searchInSogou(String keyWords, Vendor vendor)
     {
         RestTemplate rt = new RestTemplate();
-        String url = vendor.getSearchTemplate();
+        String uri = vendor.getSearchTemplate();
 
-        String searchResult = rt.getForObject(url, String.class, keyWords);
-
-        JSONObject json = new JSONObject();
+        String searchResult = rt.getForObject(uri, String.class, keyWords);
 
         Document searchResultDoc = Jsoup.parse(searchResult);
 
@@ -30,18 +29,14 @@ public class webCrawler
         String content = new RestTemplate().getForObject(contentUri, String.class);
 
         Document contentDoc = Jsoup.parse(content);
-        String pictureUri = extractPicture(searchResult, vendor);
+        String pictureUri = vendor.getPostImage(contentUri, contentDoc);
         String title = vendor.getTitle(contentDoc);
         String mainBody = vendor.getMainBody(contentUri, contentDoc);
 
-        json.put("title", title)
-                .put("content", mainBody)
-                .put("post_url", contentUri)
-                .put("post_img", pictureUri);
-
-        return json;
+        return new ArticlePO(null, title, mainBody, contentUri, pictureUri, null);
     }
 
+    // stockade project
     private static String extractPicture(String html, Vendor vendor)
     {
         Document doc = Jsoup.parse(html);
@@ -56,5 +51,6 @@ public class webCrawler
     public static void main(String[] args)
     {
         System.out.println(searchInSogou("我们都老了", new Zhihu()));
+        System.out.println(searchInSogou("我们都老了", new Wechat()));
     }
 }
