@@ -4,6 +4,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,8 +44,7 @@ public class Zhihu extends Vendor
         return titleElement.child(0).child(0).ownText();
     }
 
-    @Override
-    public String getMainBody(String uri, Document document)
+    private Element extractMainBody(String uri, Document document)
     {
         // 提取特定答案(#answer-id)
         Pattern pattern = Pattern.compile(".*#(answer-\\d+)");
@@ -57,12 +57,29 @@ public class Zhihu extends Vendor
             Elements hintElement = document.getElementsByAttributeValue("name", answerName);
             Element answerElement = hintElement.get(0).nextElementSibling().nextElementSibling().nextElementSibling();
 
-            return answerElement.toString();
+            return answerElement;
         }
         else
         {
-            return "";
+            throw new NoSuchElementException();
         }
+    }
+
+    @Override
+    public String getMainBody(String uri, Document document)
+    {
+        // 提取特定答案(#answer-id)
+        return extractMainBody(uri, document).toString();
+    }
+
+    @Override
+    public String getPostImage(String uri, Document document)
+    {
+        Element mainBody = extractMainBody(uri, document);
+
+        Element imageElement = mainBody.getElementsByTag("img").first();
+
+        return imageElement.attr("src");
     }
 
 }

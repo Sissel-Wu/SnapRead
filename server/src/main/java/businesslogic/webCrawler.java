@@ -18,9 +18,9 @@ public class webCrawler
     public static JSONObject searchInSogou(String keyWords, Vendor vendor)
     {
         RestTemplate rt = new RestTemplate();
-        String url = vendor.getSearchTemplate();
+        String uri = vendor.getSearchTemplate();
 
-        String searchResult = rt.getForObject(url, String.class, keyWords);
+        String searchResult = rt.getForObject(uri, String.class, keyWords);
 
         JSONObject json = new JSONObject();
 
@@ -30,7 +30,7 @@ public class webCrawler
         String content = new RestTemplate().getForObject(contentUri, String.class);
 
         Document contentDoc = Jsoup.parse(content);
-        String pictureUri = extractPicture(searchResult, vendor);
+        String pictureUri = vendor.getPostImage(contentUri, contentDoc);
         String title = vendor.getTitle(contentDoc);
         String mainBody = vendor.getMainBody(contentUri, contentDoc);
 
@@ -42,6 +42,7 @@ public class webCrawler
         return json;
     }
 
+    // stockade project
     private static String extractPicture(String html, Vendor vendor)
     {
         Document doc = Jsoup.parse(html);
@@ -56,5 +57,6 @@ public class webCrawler
     public static void main(String[] args)
     {
         System.out.println(searchInSogou("我们都老了", new Zhihu()));
+        System.out.println(searchInSogou("电车难题看到最后哈哈哈哈", new Wechat()));
     }
 }

@@ -21,4 +21,6 @@ public abstract class Vendor
     public abstract String getTitle(Document document);
 
     public abstract String getMainBody(String uri, Document document);
+
+    public abstract String getPostImage(String uri, Document document);
 }
