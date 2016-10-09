@@ -1,9 +1,11 @@
 package org.sensation.snapread.po;
 
+import java.io.Serializable;
+
 /**
  * Created by nians on 2016/10/9.
  */
-public class TagPO {
+public class TagPO implements Serializable{
     private String user_id;
     private String tag_name;
 

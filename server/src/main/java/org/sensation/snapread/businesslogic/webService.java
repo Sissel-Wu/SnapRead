@@ -2,9 +2,10 @@ package org.sensation.snapread.businesslogic;
 
 import org.json.JSONObject;
 import org.sensation.snapread.businesslogic.consts.Wechat;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.sensation.snapread.data.ArticleData;
+import org.sensation.snapread.data.DataService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by nians on 2016/10/7.
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class WebService
 {
+    @Autowired
+    ArticleData articleData;
 
     @RequestMapping("/getPostList")
     public String getPostList(@RequestParam("user_id") String userID){
@@ -55,12 +58,13 @@ public class WebService
         return null;
     }
 
-    @RequestMapping("/addTag")
+    @RequestMapping(value = "/addTag", method = RequestMethod.POST )
     public String getTag(@RequestParam("user_id") String userID,
                          @RequestParam("tag_name") String tagName,
                          @RequestParam("description") String description,
-                         @RequestParam("tag_img") byte[] tagImg) {
-        return null;
+                         @RequestBody byte[] tagImg) {
+
+        return tagImg.length+"";
     }
 
     @RequestMapping("/deleteTag")

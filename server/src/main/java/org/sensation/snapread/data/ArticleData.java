@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.sensation.snapread.po.ArticlePO;
 import org.sensation.snapread.util.ResultMessage;
+import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
 
@@ -12,33 +13,35 @@ import java.util.Iterator;
  * Article访问控制
  * Created by Sissel on 2016/10/9.
  */
-public class ArticleData
+
+@Component
+public class ArticleData implements DataService
 {
     Session session;
 
     public ArticleData()
     {
-        this.session = MySessionFactory.sessionFactory.openSession();
+        this.session = MySessionFactory.getSessionFactory().openSession();
     }
 
-    public ResultMessage addArticle(ArticlePO memo)
+    public ResultMessage addArticle(ArticlePO articlePO)
     {
-        if(findArticle(memo.getPost_id())!=null)
+        if(findArticle(articlePO.getPost_id())!=null)
         {
             return new ResultMessage(false,"this article already exists!");
         }
         else
         {
             session.beginTransaction();
-            session.save(memo);
+            session.save(articlePO);
             session.getTransaction().commit();
             return new ResultMessage(true,"success");
         }
     }
 
-    public ResultMessage deleteArticle(String memoID)
+    public ResultMessage deleteArticle(String postID)
     {
-        if(findArticle(memoID)==null)
+        if(findArticle(postID)==null)
         {
             return new ResultMessage(false,"this article doesn't exist!");
         }
@@ -46,7 +49,7 @@ public class ArticleData
         {
             session.beginTransaction();
             ArticlePO tmp = new ArticlePO();
-            tmp.setPost_id(memoID);
+            tmp.setPost_id(postID);
             session.clear();
             session.delete(tmp);
             session.getTransaction().commit();
@@ -54,9 +57,9 @@ public class ArticleData
         }
     }
 
-    public ResultMessage updateArticle(ArticlePO memo)
+    public ResultMessage updateArticle(ArticlePO articlePO)
     {
-        if(findArticle(memo.getPost_id())==null)
+        if(findArticle(articlePO.getPost_id())==null)
         {
             return new ResultMessage(false,"this article doesn't exist!");
         }
@@ -64,7 +67,7 @@ public class ArticleData
         {
             session.beginTransaction();
             session.clear();
-            session.update(memo);
+            session.update(articlePO);
             session.getTransaction().commit();
             return new ResultMessage(true,"success");
         }
