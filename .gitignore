@@ -6,6 +6,7 @@
 .DS_Store
 /build
 /captures
+/server/answer
 **/.idea/
 **/target/
 server/.idea/
