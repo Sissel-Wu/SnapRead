@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
  * 爬取页面
  * Created by Sissel on 2016/10/7.
  */
-public class webCrawler
+public class WebCrawler
 {
     public static JSONObject searchInSogou(String keyWords, Vendor vendor)
     {

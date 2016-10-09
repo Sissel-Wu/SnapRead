@@ -1,5 +1,7 @@
 package org.sensation.snapread.businesslogic;
 
+import org.json.JSONObject;
+import org.sensation.snapread.businesslogic.consts.Wechat;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-public class webService {
+public class WebService
+{
 
     @RequestMapping("/getPostList")
     public String getPostList(@RequestParam("user_id") String userID){
@@ -24,7 +27,11 @@ public class webService {
 
     @RequestMapping("/searchPost")
     public String searchPost(@RequestParam("keyword") String keyword) {
-        return null;
+        JSONObject result = WebCrawler.searchInSogou(keyword, new Wechat());
+
+        // TODO: 2016/10/9 add type and post_id
+
+        return result.toString();
     }
 
     @RequestMapping("/editPost")
