@@ -1,7 +1,6 @@
-package businesslogic.consts;
+package org.sensation.snapread.businesslogic.consts;
 
 import org.jsoup.nodes.Document;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * 为不同的网站的不同限制（如id值不同）给一个统一接口

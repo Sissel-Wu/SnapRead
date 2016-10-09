@@ -1,4 +1,4 @@
-package data;
+package org.sensation.snapread.data;
 
 /**
  * Created by nians on 2016/10/9.

@@ -7460,7 +7460,7 @@ d-i,1
 d1,20
 d2,58
 damage,6
-data,100
+org.sensation.snapread.data,100
 db,20
 dc,8
 decision,16

@@ -3,7 +3,7 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 2016-2-25 21:24:07 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-    <class name="po.ArticlePO" table="ARTICLEPO">
+    <class name="org.sensation.snapread.po.ArticlePO" table="ARTICLEPO">
         <id name="post_id" type="java.lang.String">
             <column name="post_id" />
             <generator class="assigned" />

@@ -23,18 +23,12 @@
  * 
  * 
  */
-package businesslogic.classification;
+package org.sensation.snapread.businesslogic.classification;
 
-import data.ArticleData;
+import org.sensation.snapread.data.ArticleData;
 import org.wltea.analyzer.core.IKSegmenter;
 import org.wltea.analyzer.core.Lexeme;
-import org.wltea.analyzer.lucene.IKAnalyzer;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
-import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
-import po.ArticlePO;
+import org.sensation.snapread.po.ArticlePO;
 
 import java.io.*;
 import java.text.DecimalFormat;

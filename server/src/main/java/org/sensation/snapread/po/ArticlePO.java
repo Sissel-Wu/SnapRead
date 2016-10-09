@@ -1,4 +1,4 @@
-package po;
+package org.sensation.snapread.po;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

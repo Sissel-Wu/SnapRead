@@ -1,4 +1,4 @@
-package businesslogic.consts;
+package org.sensation.snapread.businesslogic.consts;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

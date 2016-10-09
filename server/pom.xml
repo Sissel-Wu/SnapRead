@@ -115,7 +115,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>
-                        starter.serverApplication
+                        org.sensation.snapread.serverApplication
                     </mainClass>
                     <jvmArguments>
                         -Dfile.encoding=UTF-8

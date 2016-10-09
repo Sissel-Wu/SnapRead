@@ -1,10 +1,10 @@
-package data;
+package org.sensation.snapread.data;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import po.ArticlePO;
-import util.ResultMessage;
+import org.sensation.snapread.po.ArticlePO;
+import org.sensation.snapread.util.ResultMessage;
 
 import java.util.Iterator;
 

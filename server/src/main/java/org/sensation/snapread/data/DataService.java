@@ -1,4 +1,4 @@
-package data;
+package org.sensation.snapread.data;
 
 import java.util.Iterator;
 

@@ -1,4 +1,4 @@
-package util;
+package org.sensation.snapread.util;
 
 /**
  *

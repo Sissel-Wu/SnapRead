@@ -9108,7 +9108,7 @@ capacity,12
 编译,20
 传媒,24
 医学,36
-data,100
+org.sensation.snapread.data,100
 theoretical,12
 坚定,61
 华夏,24

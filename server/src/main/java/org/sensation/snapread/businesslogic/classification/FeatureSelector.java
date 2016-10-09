@@ -1,7 +1,6 @@
-package businesslogic.classification;
+package org.sensation.snapread.businesslogic.classification;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

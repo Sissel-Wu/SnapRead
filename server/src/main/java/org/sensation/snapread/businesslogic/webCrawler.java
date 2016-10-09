@@ -1,8 +1,8 @@
-package businesslogic;
+package org.sensation.snapread.businesslogic;
 
-import businesslogic.consts.Vendor;
-import businesslogic.consts.Wechat;
-import businesslogic.consts.Zhihu;
+import org.sensation.snapread.businesslogic.consts.Vendor;
+import org.sensation.snapread.businesslogic.consts.Wechat;
+import org.sensation.snapread.businesslogic.consts.Zhihu;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

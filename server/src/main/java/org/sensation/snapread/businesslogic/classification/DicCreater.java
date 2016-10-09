@@ -1,4 +1,4 @@
-package businesslogic.classification;
+package org.sensation.snapread.businesslogic.classification;
 
 import org.wltea.analyzer.core.IKSegmenter;
 import org.wltea.analyzer.core.Lexeme;
@@ -6,7 +6,6 @@ import org.wltea.analyzer.core.Lexeme;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -33,7 +32,7 @@ public class DicCreater {
                 "            C29-Transport, C31-Environment, C32-Agriculture, C34-Economy, C35-Law, C36-Medical," +
                 "            C37-Military, C38-Politics, C39-Sports}" +
                 "\n" +
-                "@data\n");
+                "@org.sensation.snapread.data\n");
         for (String cata : catas) {
             ArrayList<String> files = this.getFiles(cata);
 
