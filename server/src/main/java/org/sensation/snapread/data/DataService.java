@@ -1,5 +1,7 @@
 package org.sensation.snapread.data;
 
+import org.sensation.snapread.po.ArticlePO;
+
 import java.util.Iterator;
 
 /**
@@ -7,4 +9,6 @@ import java.util.Iterator;
  */
 public interface DataService {
     public Iterator<PassagePO> getCategoryPassage(String cateName);
+
+    Iterator<ArticlePO> getArticles(String userID);
 }

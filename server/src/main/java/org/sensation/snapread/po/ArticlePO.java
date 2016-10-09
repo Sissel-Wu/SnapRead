@@ -1,5 +1,10 @@
 package org.sensation.snapread.po;
 
+import net.minidev.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -32,6 +37,24 @@ public class ArticlePO
         this.type = type;
         this.post_url = post_url;
         this.post_img = post_img;
+    }
+
+    /**
+     * 从content中提出文字
+     */
+    public String getText()
+    {
+        Document document = Jsoup.parseBodyFragment(content);
+
+        Element current = document.body();
+
+        return current.text();
+    }
+
+    @Override
+    public String toString()
+    {
+        return "post_id:" + post_id + " title:" + title + " summary:" + getText();
     }
 
     /*

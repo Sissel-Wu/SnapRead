@@ -2,9 +2,14 @@ package org.sensation.snapread.businesslogic;
 
 import org.json.JSONObject;
 import org.sensation.snapread.businesslogic.consts.Wechat;
+import org.sensation.snapread.data.DataService;
+import org.sensation.snapread.data.DataStub;
+import org.sensation.snapread.po.ArticlePO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Iterator;
 
 /**
  * Created by nians on 2016/10/7.
@@ -14,10 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class WebService
 {
+    DataService dataService = new DataStub();
 
     @RequestMapping("/getPostList")
-    public String getPostList(@RequestParam("user_id") String userID){
-        return null;
+    public Iterator<ArticlePO> getPostList(@RequestParam("user_id") String userID){
+        Iterator<ArticlePO> articles = dataService.getArticles(userID);
+
+        return articles;
     }
 
     @RequestMapping("/getPost")
@@ -27,9 +35,9 @@ public class WebService
 
     @RequestMapping("/searchPost")
     public String searchPost(@RequestParam("keyword") String keyword) {
-        JSONObject result = WebCrawler.searchInSogou(keyword, new Wechat());
+        ArticlePO result = WebCrawler.searchInSogou(keyword, new Wechat());
 
-        // TODO: 2016/10/9 add type and post_id
+        // TODO: 2016/10/9 add type and post_id(userid)
 
         return result.toString();
     }
@@ -52,6 +60,7 @@ public class WebService
 
     @RequestMapping("/getTag")
     public String getTag(@RequestParam("user_id") String userID) {
+
         return null;
     }
 

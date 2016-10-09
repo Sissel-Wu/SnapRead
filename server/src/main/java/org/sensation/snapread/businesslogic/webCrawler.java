@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.sensation.snapread.po.ArticlePO;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -15,14 +16,12 @@ import org.springframework.web.client.RestTemplate;
  */
 public class WebCrawler
 {
-    public static JSONObject searchInSogou(String keyWords, Vendor vendor)
+    public static ArticlePO searchInSogou(String keyWords, Vendor vendor)
     {
         RestTemplate rt = new RestTemplate();
         String uri = vendor.getSearchTemplate();
 
         String searchResult = rt.getForObject(uri, String.class, keyWords);
-
-        JSONObject json = new JSONObject();
 
         Document searchResultDoc = Jsoup.parse(searchResult);
 
@@ -34,12 +33,7 @@ public class WebCrawler
         String title = vendor.getTitle(contentDoc);
         String mainBody = vendor.getMainBody(contentUri, contentDoc);
 
-        json.put("title", title)
-                .put("content", mainBody)
-                .put("post_url", contentUri)
-                .put("post_img", pictureUri);
-
-        return json;
+        return new ArticlePO(null, title, mainBody, contentUri, pictureUri, null);
     }
 
     // stockade project
@@ -57,6 +51,6 @@ public class WebCrawler
     public static void main(String[] args)
     {
         System.out.println(searchInSogou("我们都老了", new Zhihu()));
-        System.out.println(searchInSogou("电车难题看到最后哈哈哈哈", new Wechat()));
+        System.out.println(searchInSogou("我们都老了", new Wechat()));
     }
 }
