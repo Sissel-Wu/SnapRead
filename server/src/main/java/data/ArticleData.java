@@ -79,12 +79,10 @@ public class ArticleData
         return cri.list().isEmpty() ? null : (ArticlePO) cri.list().get(0);
     }
 
-    @SuppressWarnings("unchecked")
-    public Iterator<ArticlePO> getArticleList(String userID)
+    public Iterator<ArticlePO> getAllArticle()
     {
         session.beginTransaction();
         Criteria cri = session.createCriteria(ArticlePO.class);
-        cri.add(Restrictions.eq("userID", userID));
         return (Iterator<ArticlePO>)cri.list().iterator();
     }
 }

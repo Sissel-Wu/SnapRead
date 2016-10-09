@@ -25,6 +25,7 @@
  */
 package businesslogic.classification;
 
+import data.ArticleData;
 import org.wltea.analyzer.core.IKSegmenter;
 import org.wltea.analyzer.core.Lexeme;
 import org.wltea.analyzer.lucene.IKAnalyzer;
@@ -33,11 +34,13 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
+import po.ArticlePO;
 
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -48,11 +51,16 @@ import java.util.Map;
 public class ClassificationController {
     Map<String, Integer> dic;
     ArrayList<String> dicArray;
+    ArticleData data;
 
     public ClassificationController() {
+        data = new ArticleData();
+
         //load dictionary
         dic = new HashMap<>();
         dicArray = new ArrayList<>();
+
+
         try {
             BufferedReader reader = new BufferedReader(new FileReader(new File("selected_dic.txt")));
             for(String s = reader.readLine();s!=null;s = reader.readLine()) {
@@ -72,10 +80,26 @@ public class ClassificationController {
 
         ArrayList<Double> wordVector = this.getWordVector(luceneCutResult);
 
+        ArticlePO similarArticle = this.getMostSimilarArticle(wordVector);
 
+        return similarArticle.getType();
+    }
 
+    private ArticlePO getMostSimilarArticle(ArrayList<Double> wordVector) {
+        Iterator<ArticlePO> it = data.getAllArticle();
+        double minDis = Double.MAX_VALUE;
+        ArticlePO similarPointer = null;
+        while (it.hasNext()) {
+            ArticlePO po = it.next();
+            ArrayList<Double> a2 = this.fromFeatureString(po.getFeature(),wordVector.size());
+            double tempDis = this.calculateCosineDistance(wordVector, a2);
+            if(tempDis<minDis) {
+                minDis = tempDis;
+                similarPointer = po;
+            }
+        }
 
-        return null;
+        return similarPointer;
     }
 
     private double calculateCosineDistance(ArrayList<Double> a1, ArrayList<Double> a2) {
