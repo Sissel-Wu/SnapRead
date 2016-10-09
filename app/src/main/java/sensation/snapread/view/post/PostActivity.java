@@ -5,14 +5,12 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -26,9 +24,11 @@ import butterknife.ButterKnife;
 import sensation.snapread.R;
 import sensation.snapread.contract.PostContract;
 import sensation.snapread.model.vopo.PostVO;
+import sensation.snapread.presenter.PostPresenter;
 import sensation.snapread.view.browser.BrowserActivity;
+import sensation.snapread.view.widget.SwipeBackActivity;
 
-public class PostActivity extends AppCompatActivity implements PostContract.View {
+public class PostActivity extends SwipeBackActivity implements PostContract.View {
 
     private static final String ARG_ID = "id";
     private static final String ARG_TITLE = "title";
@@ -75,13 +75,14 @@ public class PostActivity extends AppCompatActivity implements PostContract.View
         intent.putExtra(ARG_IMG, imgUrl);
 
         activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in, R.anim.half_silde_out);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
-
+        presenter = new PostPresenter(this);
         ButterKnife.bind(this);
 
         preLoad();
@@ -131,14 +132,14 @@ public class PostActivity extends AppCompatActivity implements PostContract.View
             }
             mToolBarTitle.setText(title);
             toolbar.setTitle(title);
+            presenter.getPost(postID);
         }
     }
 
     private void initContent() {
         mTitleView.setText(title);
-        webView.loadUrl("http://mp.weixin.qq.com/s?src=3&timestamp=1475928725&ver=1&signature=6NO9SdGWTgcQnVoOE7JDonE7lyi0v-GVpnt5SKRLaJ1eG7Lh9n*N*fm77ulD1457pvSsS5Kou1XnKDpajZTMGijUqNgKwnL8B8HVIbvMTMnfRAGmkMUfOFskwJwSgil8R1wdfrtD2toFN3EPgUMTSf7oWghQNpSTrUUrKceUdj4=");
+        webView.loadUrl("http://www.baidu.com");
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebChromeClient(new WebChromeClient());
     }
 
     private void initToolbar() {
@@ -161,7 +162,7 @@ public class PostActivity extends AppCompatActivity implements PostContract.View
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_SUBJECT, postVO.getTitle());
-                    intent.putExtra(Intent.EXTRA_STREAM, postVO.getImgUri());
+                    intent.putExtra(Intent.EXTRA_STREAM, postVO.getImgUrl());
                     intent.putExtra(Intent.EXTRA_TEXT, postVO.getTitle() + "\n" + postVO.getUrl() + "\n\n--来自SnapRead");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(Intent.createChooser(intent, "分享内容到"));
@@ -186,8 +187,8 @@ public class PostActivity extends AppCompatActivity implements PostContract.View
     @Override
     public void showPost(PostVO postVO) {
         this.postVO = postVO;
-//        mContentView.setText(postVO.getContent());
         mUrlView.setText(postVO.getUrl());
+        webView.loadData(postVO.getContent(), "text/html", "utf-8");
     }
 
     @Override
@@ -199,5 +200,11 @@ public class PostActivity extends AppCompatActivity implements PostContract.View
     public void onDestroy() {
         webView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.half_slide_in, R.anim.slide_out);
     }
 }

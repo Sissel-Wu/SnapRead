@@ -13,7 +13,6 @@ public interface PostContract {
 
         void showPost(PostVO postVO);
 
-
     }
 
     interface Presenter extends BasePresenter {

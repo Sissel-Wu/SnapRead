@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +30,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import sensation.snapread.BasePresenter;
 import sensation.snapread.R;
-import sensation.snapread.model.RepositoryFactory;
 import sensation.snapread.presenter.CollectionPresenter;
 import sensation.snapread.presenter.PresenterCache;
 import sensation.snapread.presenter.TypePresenter;
@@ -120,8 +118,7 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             String item = (String) parent.getItemAtPosition(position);
-                            Log.d("SnapRead", "onItemClick: " + item);
-                            SearchActivity.startActivity(MainActivity.this, item, ViewTool.TYPE_SEARCH);
+                            SearchActivity.startActivity(MainActivity.this, item, ViewTool.TYPE_SEARCH, "");
                         }
                     });
                 }
@@ -138,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
             @Override
             public boolean onQueryTextSubmit(String query) {
                 cache.addSearchHistory(query);
-                SearchActivity.startActivity(MainActivity.this, query, ViewTool.TYPE_SEARCH);
+                SearchActivity.startActivity(MainActivity.this, query, ViewTool.TYPE_SEARCH, "");
                 return true;
             }
 
@@ -191,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
                     layoutParams.setMargins(0, 0, 0, 0);
                     collectionFragment = CollectionFragment.newInstance();
                     collectionFragment.setNavigationInterface(this);
-                    collectionPresenter = new CollectionPresenter(RepositoryFactory.getInternetRepository(), collectionFragment);
+                    collectionPresenter = new CollectionPresenter(collectionFragment);
                     transaction.add(R.id.fragment_content, collectionFragment);
                 } else {
                     layoutParams.setMargins(0, 0, 0, 0);
@@ -205,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
                     layoutParams.setMargins(0, 0, 0, 0);
                     typeFragment = TypeFragment.newInstance();
                     typeFragment.setNavigationInterface(this);
-                    typePresenter = new TypePresenter(RepositoryFactory.getInternetRepository(), typeFragment);
+                    typePresenter = new TypePresenter(typeFragment);
                     transaction.add(R.id.fragment_content, typeFragment);
                 } else {
                     layoutParams.setMargins(0, 0, 0, 0);

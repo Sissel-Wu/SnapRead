@@ -13,8 +13,8 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,6 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import me.zhanghai.android.materialprogressbar.IndeterminateProgressDrawable;
 import sensation.snapread.R;
 import sensation.snapread.contract.CollectionContract;
 import sensation.snapread.model.vopo.CollectionListItemVO;
@@ -43,21 +42,20 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
     @BindView(R.id.collection_list)
     ListView mCollectionListView;
 
-//    @BindView(R.id.fab)
-//    com.github.clans.fab.FloatingActionButton fab;
-
     @BindView(R.id.refresh_layout)
     ScrollChildSwipeRefreshLayout refreshLayout;
 
     @BindView(R.id.delete_btn)
     TextView deleteView;
 
+    @BindView(R.id.no_data_image)
+    View noDataView;
+
     NavigationInterface navigationInterface;
     CollectionContract.Presenter presenter;
     CollectionAdapter collectionAdapter;
     List<String> deleteList;
-    boolean isLoaded = false, isLoading = false;
-    View footerView;
+    boolean isLoaded = false;
 
     public static CollectionFragment newInstance() {
         return new CollectionFragment();
@@ -81,16 +79,21 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
     private void initViews() {
         initListView();
         initRefreshLayout();
+        initNoDataView();
     }
 
-//    @OnClick(R.id.fab)
-//    void newPost() {
-//        GenerateActivity.startActivity(getActivity());
-//    }
+    private void initNoDataView() {
+        noDataView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigationInterface.showNavigation();
+            }
+        });
+    }
 
     @OnClick(R.id.delete_btn)
     void deletePost() {
-        //TODO 删除deleteList中的collection
+        presenter.deleteCollection(deleteList);
     }
 
     private void initListView() {
@@ -109,11 +112,8 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
                             endY = event.getY();
                             if (endY > startY + 5) {
                                 navigationInterface.showNavigation();
-//                                fab.show(true);
-
                             } else if (endY < startY) {
                                 navigationInterface.hideNavigation();
-//                                fab.hide(true);
                             }
                             break;
                         case MotionEvent.ACTION_UP:
@@ -123,27 +123,6 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
                     }
                 }
                 return false;
-            }
-        });
-
-        mCollectionListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (view.getLastVisiblePosition() == totalItemCount - 1) {
-                    if (!isLoading) {
-                        isLoading = true;
-                        if (footerView == null) {
-                            footerView = LayoutInflater.from(getContext()).inflate(R.layout.collection_footer, null);
-                            ProgressBar progressBar = (ProgressBar) footerView.findViewById(R.id.progress_bar);
-                            progressBar.setIndeterminateDrawable(new IndeterminateProgressDrawable(getContext()));
-                        }
-                        mCollectionListView.addFooterView(footerView);
-                    }
-                }
             }
         });
 
@@ -200,9 +179,8 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
                     mCollectionListView.invalidate();
 
                     navigationInterface.hideNavigation();
-//                    fab.hide(true);
                     deleteView.setVisibility(View.VISIBLE);
-                    deleteView.startAnimation(ViewTool.getAnim(deleteView, 1, 0));
+                    deleteView.startAnimation(ViewTool.getAnim(deleteView, 2, ViewTool.dip2px(getContext(), 20)));
                 }
                 return true;
             }
@@ -215,10 +193,8 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
 
                 if (mCollectionListView.getChoiceMode() == AbsListView.CHOICE_MODE_MULTIPLE) {
                     if (keyCode == KeyEvent.KEYCODE_BACK) {
-
                         navigationInterface.showNavigation();
-//                        fab.show(true);
-                        deleteView.startAnimation(ViewTool.getAnim(deleteView, 2, 0));
+                        deleteView.startAnimation(ViewTool.getAnim(deleteView, 1, ViewTool.dip2px(getContext(), 20)));
                         deleteView.setVisibility(View.GONE);
 
                         mCollectionListView.clearChoices();
@@ -253,13 +229,12 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
 
     @Override
     public void showCollections(List<CollectionListItemVO> collectionList) {
-        collectionAdapter = new CollectionAdapter(getContext(), R.layout.collection_item, collectionList, mCollectionListView);
-        mCollectionListView.setAdapter(collectionAdapter);
-    }
-
-    @Override
-    public void addCollections(List<CollectionListItemVO> collectionList) {
-        collectionAdapter.addAll(collectionList);
+        if (collectionList.size() != 0) {
+            noDataView.setVisibility(View.GONE);
+        } else {
+            collectionAdapter = new CollectionAdapter(getContext(), R.layout.collection_item, collectionList, mCollectionListView);
+            mCollectionListView.setAdapter(collectionAdapter);
+        }
     }
 
     @Override
@@ -283,18 +258,19 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
     }
 
     @Override
-    public void deleteCollection(List<CollectionListItemVO> deleteList) {
-        int count = collectionAdapter.getCount();
-        for (int i = 0; i < count; i++) {
-            CollectionListItemVO item = collectionAdapter.getItem(i);
-            for (int j = 0; j < deleteList.size(); j++) {
-                CollectionListItemVO deleteItem = deleteList.get(j);
-                if (deleteItem.equals(item)) {
-                    collectionAdapter.remove(item);
-                }
-            }
-        }
-        collectionAdapter.notifyDataSetChanged();
+    public void deleteSuccess() {
+        Toast.makeText(getContext(), "删除成功", Toast.LENGTH_SHORT).show();
+        presenter.start();
+    }
+
+    @Override
+    public void deleteFail() {
+        Toast.makeText(getContext(), "删除失败，请检查网络~", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showInternetError() {
+        Toast.makeText(getContext(), "网络错误，请检查设置~", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -320,7 +296,7 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
                             presenter.start();
                         }
                     }
-                }, 100);
+                }, 200);
             }
         }
     }

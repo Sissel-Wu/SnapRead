@@ -1,9 +1,5 @@
 package sensation.snapread.view.main.typecollection;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -20,11 +16,11 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -59,14 +55,18 @@ public class TypeFragment extends Fragment implements TypeContract.View {
     @BindView(R.id.refresh_layout)
     SwipeRefreshLayout refreshLayout;
 
+    @BindView(R.id.no_data_image)
+    View noDataView;
+
     NavigationInterface navigationInterface;
     TypeContract.Presenter presenter;
     TypeAdapter typeAdapter;
     List<String> deleteList;
     boolean isLoaded = false;
     MaterialDialog dialog;
-    ImageView imageView;
-    String path;
+    ImageView imageView1, imageView2, imageView3;
+    View card1, card2, card3;
+    String imgPath = "https://camo.githubusercontent.com/5f260ff56ba9dd4accf22a9572a9874556704bf9/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f333037323536362d386564663232356566306266646263332e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430";
 
     public static TypeFragment newInstance() {
         return new TypeFragment();
@@ -90,6 +90,17 @@ public class TypeFragment extends Fragment implements TypeContract.View {
     private void initViews() {
         initListView();
         initRefreshLayout();
+        initNoDataView();
+    }
+
+    private void initNoDataView() {
+        noDataView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigationInterface.showNavigation();
+                fab.show(true);
+            }
+        });
     }
 
     @OnClick(R.id.fab)
@@ -109,7 +120,7 @@ public class TypeFragment extends Fragment implements TypeContract.View {
                                 String tagName = tagNameView.getText().toString();
                                 TextView tagDesView = (TextView) view.findViewById(R.id.des);
                                 String des = tagDesView.getText().toString();
-                                presenter.addType(tagName, des, path);
+                                presenter.addType(tagName, des, imgPath);
                             }
                         }
                     })
@@ -126,15 +137,40 @@ public class TypeFragment extends Fragment implements TypeContract.View {
 
             View view = dialog.getCustomView();
             if (view != null) {
-                if (imageView == null) {
-                    imageView = (ImageView) view.findViewById(R.id.image);
+                if (imageView1 == null) {
+                    card1 = view.findViewById(R.id.card1);
+                    imageView1 = (ImageView) view.findViewById(R.id.image1);
                 }
-                imageView.setOnClickListener(new View.OnClickListener() {
+                if (imageView2 == null) {
+                    card2 = view.findViewById(R.id.card2);
+                    imageView2 = (ImageView) view.findViewById(R.id.image2);
+                }
+                if (imageView3 == null) {
+                    card3 = view.findViewById(R.id.card3);
+                    imageView3 = (ImageView) view.findViewById(R.id.image3);
+                }
+                imageView1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        intent.setType("image/*");
-                        startActivityForResult(Intent.createChooser(intent, "选择图片"), SELECT_PHOTO);
+                        imgPath = "https://camo.githubusercontent.com/5f260ff56ba9dd4accf22a9572a9874556704bf9/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f333037323536362d386564663232356566306266646263332e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430";
+                        clearElevation();
+                        card1.setElevation(18);
+                    }
+                });
+                imageView2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imgPath = "http://img.taopic.com/uploads/allimg/140226/234991-14022609204234.jpg";
+                        clearElevation();
+                        card2.setElevation(18);
+                    }
+                });
+                imageView3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imgPath = "http://img2.3lian.com/2014/f7/11/d/97.jpg";
+                        clearElevation();
+                        card3.setElevation(18);
                     }
                 });
             }
@@ -143,21 +179,10 @@ public class TypeFragment extends Fragment implements TypeContract.View {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SELECT_PHOTO) {
-            if (resultCode == Activity.RESULT_OK) {
-                try {
-                    Uri uri = data.getData();
-                    path = ViewTool.uri2path(getContext(), uri);
-
-                    imageView.setImageBitmap(BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(data.getData())));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    private void clearElevation() {
+        card1.setElevation(3);
+        card2.setElevation(3);
+        card3.setElevation(3);
     }
 
     private void initRefreshLayout() {
@@ -224,35 +249,11 @@ public class TypeFragment extends Fragment implements TypeContract.View {
                         mTypeListView.invalidate();
 
                     } else {
-                        SearchActivity.startActivity(getActivity(), item.getTitle(), ViewTool.TYPE_TAG);
+                        SearchActivity.startActivity(getActivity(), item.getTitle(), ViewTool.TYPE_TAG, item.getTypeID());
                     }
                 }
             }
         });
-
-        //长按事件
-//        mTypeListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                deleteList = new ArrayList<>();
-//                TypeItemVO item = (TypeItemVO) parent.getItemAtPosition(position);
-//                if (item != null) {
-//                    mTypeListView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
-//                    mTypeListView.setItemChecked(position, true);
-//                    deleteList.add(item.getTypeID());
-//
-//                    typeAdapter.notifyDataSetChanged();
-//                    mTypeListView.invalidate();
-//                    mTypeListView.setFocusable(true);
-//
-//                    navigationInterface.hideNavigation();
-//                    fab.hide(true);
-//                    deleteView.setVisibility(View.VISIBLE);
-//                    deleteView.startAnimation(ViewTool.getAnim(deleteView, 2, 10));
-//                }
-//                return true;
-//            }
-//        });
 
         mTypeListView.setFocusable(true);
         mTypeListView.setOnKeyListener(new View.OnKeyListener() {
@@ -264,7 +265,6 @@ public class TypeFragment extends Fragment implements TypeContract.View {
                         mTypeListView.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
                         typeAdapter.notifyDataSetChanged();
                         mTypeListView.invalidate();
-
 
                         return true;
                     } else {
@@ -327,5 +327,26 @@ public class TypeFragment extends Fragment implements TypeContract.View {
     public void setTypesList(List<TypeItemVO> typeList) {
         typeAdapter = new TypeAdapter(getContext(), R.layout.type_item, typeList, mTypeListView);
         mTypeListView.setAdapter(typeAdapter);
+    }
+
+    @Override
+    public void addSuccess() {
+        Toast.makeText(getContext(), "添加成功！", Toast.LENGTH_SHORT).show();
+        presenter.start();
+    }
+
+    @Override
+    public void addFail() {
+        Toast.makeText(getContext(), "添加失败，请检查网络", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showInternetError() {
+        Toast.makeText(getContext(), "网络错误，请检查设置~", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showImageError() {
+        Toast.makeText(getContext(), "图片错误，请重试", Toast.LENGTH_SHORT).show();
     }
 }

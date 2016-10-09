@@ -33,6 +33,7 @@
     -->
     <list>
         <mapping class="sensation.snapread.model.vopo.PostPO"></mapping>
+        <mapping class="sensation.snapread.model.vopo.TypePO"></mapping>
     </list>
 
     <!--

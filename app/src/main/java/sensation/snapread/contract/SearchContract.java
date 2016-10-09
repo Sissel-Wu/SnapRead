@@ -19,10 +19,16 @@ public interface SearchContract {
 
         void hideLoading();
 
+        void deleteSuccess();
+
+        void deleteFail();
+
     }
 
     interface Presenter extends BasePresenter {
 
         void getSearchResult(String keyword, String type);
+
+        void deleteTag(String tagID);
     }
 }

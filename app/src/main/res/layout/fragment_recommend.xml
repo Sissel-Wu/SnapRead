@@ -10,4 +10,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <RelativeLayout
+        android:id="@+id/no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/no_data_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:alpha="0.8"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/no_data_image"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="还没有推荐文章，截屏收藏更多文章吧~"
+            android:textSize="16sp" />
+    </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

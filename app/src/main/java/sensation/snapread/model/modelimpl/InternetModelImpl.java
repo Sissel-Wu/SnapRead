@@ -11,8 +11,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Alan on 2016/9/17.
  */
 public class InternetModelImpl {
-    private static final String BASE_URL = "http://120.27.117.222:8080/api/";
-    private static final int DEFAULT_TIMEOUT = 10;
+    static final String BASE_URL = "http://120.27.117.222:8080/api/";
+    static final int DEFAULT_TIMEOUT = 10;
     Retrofit retrofit;
 
     protected InternetModelImpl(String baseUrl) {

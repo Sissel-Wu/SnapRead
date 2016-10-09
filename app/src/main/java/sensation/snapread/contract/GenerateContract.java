@@ -28,6 +28,8 @@ public interface GenerateContract {
         void showImageError();
 
         void showInternetError();
+
+        void showAddSuccess(String typeName);
     }
 
     interface Presenter extends BasePresenter {
@@ -36,8 +38,10 @@ public interface GenerateContract {
 
         void getTypes(String userID);
 
+        void addType(String typeName, String description, String imgPath);
+
         void searchPost(String postID);
 
-        void savePost(PostVO postVO);
+        void savePost(PostVO postVO, String description);
     }
 }

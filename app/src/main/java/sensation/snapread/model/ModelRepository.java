@@ -4,6 +4,7 @@ import sensation.snapread.model.modelinterface.CollectionModel;
 import sensation.snapread.model.modelinterface.GenerateModel;
 import sensation.snapread.model.modelinterface.PostModel;
 import sensation.snapread.model.modelinterface.RecommendModel;
+import sensation.snapread.model.modelinterface.SearchModel;
 import sensation.snapread.model.modelinterface.TypeModel;
 
 /**
@@ -19,4 +20,6 @@ public interface ModelRepository extends Repository {
     TypeModel getTypeModel();
 
     RecommendModel getRecommendModel();
+
+    SearchModel getSearchModel();
 }

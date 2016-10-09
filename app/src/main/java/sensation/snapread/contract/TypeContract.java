@@ -19,6 +19,14 @@ public interface TypeContract {
 
         void setTypesList(List<TypeItemVO> typeList);
 
+        void addSuccess();
+
+        void addFail();
+
+        void showInternetError();
+
+        void showImageError();
+
     }
 
     interface Presenter extends BasePresenter {
@@ -26,8 +34,6 @@ public interface TypeContract {
         void getTypeList(String userID);
 
         void addType(String typeName, String description, String imgPath);
-
-        void deleteTypes(List<String> typeID);
 
     }
 }

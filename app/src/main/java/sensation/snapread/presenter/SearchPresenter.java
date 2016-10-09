@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sensation.snapread.contract.SearchContract;
-import sensation.snapread.model.ModelRepository;
 import sensation.snapread.model.vopo.CollectionListItemVO;
 
 /**
@@ -14,7 +13,7 @@ public class SearchPresenter implements SearchContract.Presenter {
 
     SearchContract.View searchView;
 
-    public SearchPresenter(ModelRepository repository, SearchContract.View searchView) {
+    public SearchPresenter(SearchContract.View searchView) {
         this.searchView = searchView;
         searchView.setPresenter(this);
     }
@@ -38,6 +37,11 @@ public class SearchPresenter implements SearchContract.Presenter {
         collectionList.add(vo5);
         searchView.showSearchResult(collectionList);
         searchView.hideLoading();
+    }
+
+    @Override
+    public void deleteTag(String tagID) {
+        searchView.deleteSuccess();
     }
 
     @Override

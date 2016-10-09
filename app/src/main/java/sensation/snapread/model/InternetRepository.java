@@ -7,10 +7,14 @@ import android.util.Log;
 
 import sensation.snapread.model.modelimpl.InternetCollectionModelImpl;
 import sensation.snapread.model.modelimpl.InternetGenerateModelImpl;
+import sensation.snapread.model.modelimpl.InternetPostModelImpl;
+import sensation.snapread.model.modelimpl.InternetRecommendModelImpl;
+import sensation.snapread.model.modelimpl.InternetTypeModelImpl;
 import sensation.snapread.model.modelinterface.CollectionModel;
 import sensation.snapread.model.modelinterface.GenerateModel;
 import sensation.snapread.model.modelinterface.PostModel;
 import sensation.snapread.model.modelinterface.RecommendModel;
+import sensation.snapread.model.modelinterface.SearchModel;
 import sensation.snapread.model.modelinterface.TypeModel;
 
 /**
@@ -65,16 +69,21 @@ public class InternetRepository implements ModelRepository {
 
     @Override
     public PostModel getPostModelImpl() {
-        return null;
+        return new InternetPostModelImpl();
     }
 
     @Override
     public TypeModel getTypeModel() {
-        return null;
+        return new InternetTypeModelImpl();
     }
 
     @Override
     public RecommendModel getRecommendModel() {
+        return new InternetRecommendModelImpl();
+    }
+
+    @Override
+    public SearchModel getSearchModel() {
         return null;
     }
 }

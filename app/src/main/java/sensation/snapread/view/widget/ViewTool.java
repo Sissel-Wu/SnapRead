@@ -91,15 +91,15 @@ public class ViewTool {
         if (inOrOut == 1) {
             from = 0;
             if (view != null) {
-                to = -(view.getHeight() + offset);
+                to = view.getHeight() + offset;
             } else {
-                to = -offset;
+                to = offset;
             }
         } else {
             if (view != null) {
-                from = -(view.getHeight() + offset);
+                from = view.getHeight() + offset;
             } else {
-                from = -offset;
+                from = offset;
             }
             to = 0;
         }

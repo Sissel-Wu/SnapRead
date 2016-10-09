@@ -8,15 +8,15 @@ public class PostVO {
     String title;
     String type;
     String content;
-    String imgUri;
+    String imgUrl;
     String url;
 
-    public PostVO(String postID, String title, String type, String content, String imgUri, String url) {
+    public PostVO(String postID, String title, String type, String content, String imgUrl, String url) {
         this.postID = postID;
         this.title = title;
         this.type = type;
         this.content = content;
-        this.imgUri = imgUri;
+        this.imgUrl = imgUrl;
         this.url = url;
     }
 
@@ -52,12 +52,12 @@ public class PostVO {
         this.content = content;
     }
 
-    public String getImgUri() {
-        return imgUri;
+    public String getImgUrl() {
+        return imgUrl;
     }
 
-    public void setImgUri(String imgUri) {
-        this.imgUri = imgUri;
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 
     public String getUrl() {
