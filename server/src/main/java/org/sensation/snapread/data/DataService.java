@@ -11,4 +11,8 @@ public interface DataService {
     public Iterator<PassagePO> getCategoryPassage(String cateName);
 
     Iterator<ArticlePO> getArticles(String userID);
+
+    ArticlePO getArticle(String postID);
+
+    boolean deleteArticles(String[] postID);
 }

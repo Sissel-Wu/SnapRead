@@ -5,6 +5,8 @@ import org.sensation.snapread.businesslogic.consts.Wechat;
 import org.sensation.snapread.data.DataService;
 import org.sensation.snapread.data.DataStub;
 import org.sensation.snapread.po.ArticlePO;
+import org.sensation.snapread.vo.ArticleOverviewVO;
+import org.sensation.snapread.vo.ArticleVO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * Created by nians on 2016/10/7.
@@ -28,15 +31,23 @@ public class WebService
     DataService dataService = new DataStub();
 
     @RequestMapping("/getPostList")
-    public Iterator<ArticlePO> getPostList(@RequestParam("user_id") String userID){
+    public Iterator<ArticleOverviewVO> getPostList(@RequestParam("user_id") String userID){
         Iterator<ArticlePO> articles = dataService.getArticles(userID);
+        LinkedList<ArticleOverviewVO> result = new LinkedList<>();
 
-        return articles;
+        while (articles.hasNext())
+        {
+            result.add(new ArticleOverviewVO(articles.next()));
+        }
+
+        return result.iterator();
     }
 
     @RequestMapping("/getPost")
-    public String getPost(@RequestParam("post_id") String postID) {
-        return null;
+    public ArticleVO getPost(@RequestParam("post_id") String postID) {
+        ArticlePO article = dataService.getArticle(postID);
+
+        return new ArticleVO(article);
     }
 
     @RequestMapping("/searchPost")
@@ -61,7 +72,10 @@ public class WebService
 
     @RequestMapping("/deletePost")
     public String deletePost(@RequestParam("post_id") String[] postID) {
-        return null;
+        dataService.deleteArticles(postID);
+
+        // TODO: 2016/10/9
+        return "success";
     }
 
     @RequestMapping("/getTag")
@@ -71,7 +85,7 @@ public class WebService
     }
 
     @RequestMapping(value = "/addTag", method = RequestMethod.POST )
-    public String getTag(@RequestParam("user_id") String userID,
+    public String addTag(@RequestParam("user_id") String userID,
                          @RequestParam("tag_name") String tagName,
                          @RequestParam("description") String description,
                          @RequestBody byte[] tagImg) {
