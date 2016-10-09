@@ -5,6 +5,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -12,7 +13,7 @@ import java.util.Date;
  * 文章的PO
  * Created by Sissel on 2016/10/9.
  */
-public class ArticlePO
+public class ArticlePO implements Serializable
 {
     private String post_id;
     private String user_id;

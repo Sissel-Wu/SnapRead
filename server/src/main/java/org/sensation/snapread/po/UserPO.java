@@ -1,6 +1,8 @@
 package org.sensation.snapread.po;
 
-public class UserPO {
+import java.io.Serializable;
+
+public class UserPO implements Serializable{
 	private String userID;
 
 	public UserPO(){}
