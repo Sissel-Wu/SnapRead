@@ -1,6 +1,7 @@
 package org.sensation.snapread.businesslogic;
 
 import org.json.JSONObject;
+import org.sensation.snapread.businesslogic.classification.ClassificationController;
 import org.sensation.snapread.businesslogic.consts.Wechat;
 import org.sensation.snapread.businesslogic.consts.Zhihu;
 import org.sensation.snapread.data.DataService;
@@ -63,13 +64,16 @@ public class WebService
         ArticlePO wechat = WebCrawler.searchInSogou(keyword, new Wechat());
         ArticlePO zhihu = WebCrawler.searchInSogou(keyword, new Zhihu());
 
-        // TODO: 2016/10/9 add type
+        ClassificationController classifier = new ClassificationController();
+
         if (CompareText.compare(keyword, wechat.getText()) > CompareText.compare(keyword, zhihu.getText()))
         {
+            wechat.setType(classifier.getClassification(wechat.getText()));
             return new ArticleVO(wechat);
         }
         else
         {
+            zhihu.setType(classifier.getClassification(zhihu.getText()));
             return new ArticleVO(zhihu);
         }
     }

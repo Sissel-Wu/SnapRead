@@ -8,6 +8,6 @@ public class CompareText
 {
     public static int compare(String benchmark, String realText)
     {
-        return 0;
+        return benchmark.length() - realText.length();
     }
 }
