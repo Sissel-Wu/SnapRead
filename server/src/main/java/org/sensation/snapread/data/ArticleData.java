@@ -4,6 +4,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.sensation.snapread.po.ArticlePO;
+import org.sensation.snapread.po.TagPO;
 import org.sensation.snapread.util.ResultMessage;
 import org.springframework.stereotype.Component;
 
@@ -39,22 +40,43 @@ public class ArticleData implements DataService
         }
     }
 
-    public ResultMessage deleteArticle(String postID)
+    public ResultMessage deleteArticles(String[] postIDs)
     {
-        if(findArticle(postID)==null)
+        for (String postID : postIDs)
         {
-            return new ResultMessage(false,"this article doesn't exist!");
+            if(findArticle(postID)==null)
+            {
+                return new ResultMessage(false,"this article doesn't exist!");
+            }
+            else
+            {
+                session.beginTransaction();
+                ArticlePO tmp = new ArticlePO();
+                tmp.setPost_id(postID);
+                session.clear();
+                session.delete(tmp);
+                session.getTransaction().commit();
+            }
         }
-        else
-        {
-            session.beginTransaction();
-            ArticlePO tmp = new ArticlePO();
-            tmp.setPost_id(postID);
-            session.clear();
-            session.delete(tmp);
-            session.getTransaction().commit();
-            return new ResultMessage(true,"success");
-        }
+        return new ResultMessage(true,"success");
+    }
+
+    @Override
+    public Iterator<TagPO> getTag(String userID)
+    {
+        return null;
+    }
+
+    @Override
+    public ResultMessage addTag(String userID, String tagName, String description, String tagImg)
+    {
+        return null;
+    }
+
+    @Override
+    public ResultMessage deleteTags(String[] tagID)
+    {
+        return null;
     }
 
     public ResultMessage updateArticle(ArticlePO articlePO)
@@ -71,6 +93,12 @@ public class ArticleData implements DataService
             session.getTransaction().commit();
             return new ResultMessage(true,"success");
         }
+    }
+
+    @Override
+    public Iterator<ArticlePO> getArticles(String userID)
+    {
+        return null;
     }
 
     public ArticlePO findArticle(String post_id)

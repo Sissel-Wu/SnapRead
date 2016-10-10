@@ -47,9 +47,9 @@ public class WebService
 
     @RequestMapping("/getPost")
     public ArticleVO getPost(@RequestParam("post_id") String postID) {
-        ArticlePO article = dataService.getArticle(postID);
+        // TODO: 2016/10/10  
 
-        return new ArticleVO(article);
+        return null;
     }
 
     @RequestMapping("/searchPost")
@@ -69,7 +69,7 @@ public class WebService
                            @RequestParam("post_url") String postUrl,
                            @RequestParam("post_img") byte[] postImg,
                            @RequestParam("type") String type) {
-        ArticlePO editArticle = dataService.editArticle(userID, postID, title, content, postUrl, postImg, type);
+        // TODO: 2016/10/10  
 
         return "success";
     }
