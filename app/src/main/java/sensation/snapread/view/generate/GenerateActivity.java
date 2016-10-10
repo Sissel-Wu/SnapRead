@@ -1,9 +1,9 @@
 package sensation.snapread.view.generate;
 
+import android.app.Activity;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,6 +19,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -30,12 +31,10 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,10 +42,13 @@ import butterknife.OnClick;
 import sensation.snapread.R;
 import sensation.snapread.contract.GenerateContract;
 import sensation.snapread.model.vopo.GenerateVO;
+import sensation.snapread.model.vopo.PostVO;
+import sensation.snapread.presenter.GeneratePresenter;
 import sensation.snapread.view.main.MainActivity;
 
 public class GenerateActivity extends AppCompatActivity implements GenerateContract.View {
-    private static final int SELECT_PHOTO = 2;
+    private static final int SELECT_PHOTO = 2, SELECT_PHOTO_TYPE = 3;
+    private static final String ARG_INTENT = "intent";
 
     @BindView(R.id.generate_btn)
     TextView mGenerateBtn;
@@ -60,9 +62,6 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
     @BindView(R.id.type)
     Spinner mTypeSpinner;
 
-    @BindView(R.id.content)
-    EditText mContentView;
-
     @BindView(R.id.scroll_view)
     ScrollView scrollView;
 
@@ -75,10 +74,29 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
     @BindView(R.id.app_bar)
     AppBarLayout appBarLayout;
 
+    @BindView(R.id.image_overlay)
+    ImageView imageOverlayView;
+
+    @BindView(R.id.full_image)
+    ImageView fullImageView;
+
+    @BindView(R.id.web_content)
+    WebView webView;
+
     float startY = 0, endY = 0;
-    MaterialDialog waitDialog;
+    MaterialDialog waitDialog, dialog;
     GenerateVO generateVO;
     ArrayAdapter<String> adapter;
+    Uri mImageUri = null;
+    GenerateContract.Presenter presenter;
+    ImageView imageView1, imageView2, imageView3;
+    View card1, card2, card3;
+    String imgPath = "https://camo.githubusercontent.com/5f260ff56ba9dd4accf22a9572a9874556704bf9/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f333037323536362d386564663232356566306266646263332e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430";
+
+    public static void startActivity(Activity activity) {
+        Intent intent = new Intent(activity, GenerateActivity.class);
+        activity.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,55 +104,21 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
         setContentView(R.layout.activity_generate);
         ButterKnife.bind(this);
 
-        showLoading("正在识别...");
-        init();
+        presenter = new GeneratePresenter(this);
+        mGenerateBtn.requestFocus();
+        initFetch();
         initViews();
+
+        //stub
         List<String> list = new ArrayList<>();
         list.add("设计");
         list.add("学习");
         showTypes(list);
     }
 
-    @Override
-    public void showLoading(String info) {
-        if (waitDialog == null) {
-            waitDialog =
-                    new MaterialDialog.Builder(this)
-                            .title("请等待")
-                            .cancelable(false)
-                            .progress(true, 0)
-                            .build();
-        }
-        waitDialog.setContent(info);
-        waitDialog.show();
-
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                hideLoading();
-            }
-        }, 1500);
-    }
-
-    public void hideLoading() {
-        waitDialog.dismiss();
-    }
-
-    @Override
-    public void showTypes(List<String> types) {
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mTypeSpinner.setAdapter(adapter);
-        adapter.add("+ 创建新标签");
-    }
-
-    @Override
-    public void showPost(GenerateVO generateVO) {
-        this.generateVO = generateVO;
-        mTitleView.setText(generateVO.getTitle());
-        mUrlView.setText(generateVO.getUrl());
-        mContentView.setText(generateVO.getContent());
+    private void initFetch() {
+        fetchFromPath();
+        fetchFromMimeType();
     }
 
     private void initViews() {
@@ -142,7 +126,47 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
         initScrollView();
         initSpinner();
         initToolBar();
+        initImageOverlay();
+        initFullImageView();
+    }
 
+    private void initFullImageView() {
+        imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                fullImageView.setImageDrawable(imageView.getDrawable());
+                if (fullImageView.getVisibility() == View.GONE) {
+                    fullImageView.setVisibility(View.VISIBLE);
+                    AlphaAnimation anim = new AlphaAnimation(0, 1);
+                    anim.setDuration(300);
+                    fullImageView.startAnimation(anim);
+                }
+                return true;
+            }
+        });
+        fullImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fullImageView.getVisibility() == View.VISIBLE) {
+                    AlphaAnimation anim = new AlphaAnimation(1, 0);
+                    anim.setDuration(300);
+                    fullImageView.startAnimation(anim);
+                    fullImageView.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    private void initImageOverlay() {
+        final AlphaAnimation anim = new AlphaAnimation(1, 0);
+        anim.setDuration(500);
+        imageOverlayView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                imageOverlayView.startAnimation(anim);
+                imageOverlayView.setVisibility(View.GONE);
+            }
+        }, 2500);
     }
 
     private void initToolBar() {
@@ -155,30 +179,80 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == mTypeSpinner.getCount() - 1) {
-                    new MaterialDialog.Builder(GenerateActivity.this)
-                            .title("创建新标签")
-                            .input("新建标签", "新建标签", false, new MaterialDialog.InputCallback() {
-                                @Override
-                                public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                    if (dialog == null) {
+                        dialog = new MaterialDialog.Builder(GenerateActivity.this)
+                                .title("新建标签")
+                                .customView(R.layout.type_builder, true)
+                                .positiveText("确认")
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        View view = dialog.getCustomView();
+                                        if (view != null) {
+                                            TextView tagNameView = (TextView) view.findViewById(R.id.tag);
+                                            String tagName = tagNameView.getText().toString();
+                                            TextView tagDesView = (TextView) view.findViewById(R.id.des);
+                                            String des = tagDesView.getText().toString();
 
-                                }
-                            })
-                            .positiveText("确认")
-                            .negativeText("取消")
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    if (adapter != null) {
-                                        adapter.remove("+ 创建新标签");
-                                        adapter.add(dialog.getInputEditText().getText().toString());
-                                        adapter.add("+ 创建新标签");
-                                        adapter.notifyDataSetChanged();
-                                        mTypeSpinner.setSelection(adapter.getCount() - 2);
+                                            presenter.addType(tagName, des, imgPath);
+                                        }
+                                        dialog.dismiss();
                                     }
-                                    dialog.dismiss();
+                                })
+                                .negativeText("取消")
+                                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        mTypeSpinner.setSelection(0);
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .cancelable(true)
+                                .canceledOnTouchOutside(false)
+                                .show();
+
+                        View customView = dialog.getCustomView();
+                        if (customView != null) {
+                            if (imageView1 == null) {
+                                card1 = customView.findViewById(R.id.card1);
+                                imageView1 = (ImageView) customView.findViewById(R.id.image1);
+                            }
+                            if (imageView2 == null) {
+                                card2 = customView.findViewById(R.id.card2);
+                                imageView2 = (ImageView) customView.findViewById(R.id.image2);
+                            }
+                            if (imageView3 == null) {
+                                card3 = customView.findViewById(R.id.card3);
+                                imageView3 = (ImageView) customView.findViewById(R.id.image3);
+                            }
+                            imageView1.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    imgPath = "https://camo.githubusercontent.com/5f260ff56ba9dd4accf22a9572a9874556704bf9/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f333037323536362d386564663232356566306266646263332e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430";
+                                    clearElevation();
+                                    card1.setElevation(18);
                                 }
-                            })
-                            .show();
+                            });
+                            imageView2.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    imgPath = "http://img.taopic.com/uploads/allimg/140226/234991-14022609204234.jpg";
+                                    clearElevation();
+                                    card2.setElevation(18);
+                                }
+                            });
+                            imageView3.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    imgPath = "http://img2.3lian.com/2014/f7/11/d/97.jpg";
+                                    clearElevation();
+                                    card3.setElevation(18);
+                                }
+                            });
+                        }
+                    } else {
+                        dialog.show();
+                    }
                 }
             }
 
@@ -227,15 +301,17 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
         });
     }
 
-    private void init() {
-        fetchFromPath();
-        fetchFromMimeType();
+    private void clearElevation() {
+        card1.setElevation(3);
+        card2.setElevation(3);
+        card3.setElevation(3);
     }
 
     /**
      * 从mimetype分享中获取uri
      */
     private void fetchFromMimeType() {
+        String path = "";
         Intent intent = getIntent();
         if (intent != null) {
             String action = intent.getAction();
@@ -243,18 +319,26 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
 
             if (type != null) {
                 if (type.startsWith("image/")) {
-                    Uri imageUri = null;
                     if (Intent.ACTION_VIEW.equals(action)) {
-                        imageUri = intent.getData();
+                        mImageUri = intent.getData();
                     } else if (Intent.ACTION_SEND.equals(action)) {
-                        imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                        mImageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
                     }
-                    if (imageUri != null) {
-                        try {
-                            imageView.setImageBitmap(BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri)));
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
+                    if (mImageUri != null) {
+                        Cursor cursor = getContentResolver().query(mImageUri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+                        if (null != cursor) {
+                            if (cursor.moveToFirst()) {
+                                int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                                if (index > -1) {
+                                    path = cursor.getString(index);
+                                }
+                            }
+                            cursor.close();
                         }
+                        if (!path.equals("")) {
+                            presenter.ocr(path);
+                        }
+
                     } else {
                         Toast.makeText(GenerateActivity.this, "图片已被删除啦~", Toast.LENGTH_SHORT).show();
                         finish();
@@ -270,7 +354,6 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
     private void fetchFromPath() {
         if (getIntent() != null) {
             String imagePath = getIntent().getStringExtra("imagePath");
-            Uri mImageUri = null;
             Uri mUri = Uri.parse("content://media/external/images/media");
 
             if (imagePath != null) {
@@ -291,12 +374,8 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
                     }
                     cursor.moveToNext();
                 }
-                if (mImageUri != null) {
-                    try {
-                        imageView.setImageBitmap(BitmapFactory.decodeStream(getContentResolver().openInputStream(mImageUri)));
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
+                if (!imagePath.equals("")) {
+                    presenter.ocr(imagePath);
                 } else {
                     Toast.makeText(GenerateActivity.this, "图片已被删除啦~", Toast.LENGTH_SHORT).show();
                     finish();
@@ -305,32 +384,107 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
         }
     }
 
-    @OnClick(R.id.generate_btn)
-    void generate() {
+    @Override
+    public void showLoading(String info) {
+        if (waitDialog == null) {
+            waitDialog =
+                    new MaterialDialog.Builder(this)
+                            .title("请等待")
+                            .canceledOnTouchOutside(false)
+                            .progress(true, 0)
+                            .build();
+        }
+        waitDialog.setContent(info);
+        waitDialog.show();
+    }
+
+    @Override
+    public void hideLoading() {
+        waitDialog.dismiss();
+    }
+
+    @Override
+    public void showTypes(List<String> types) {
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mTypeSpinner.setAdapter(adapter);
+        adapter.add("+ 创建新标签");
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (fullImageView.getVisibility() == View.VISIBLE) {
+            AlphaAnimation anim = new AlphaAnimation(1, 0);
+            anim.setDuration(300);
+            fullImageView.startAnimation(anim);
+            fullImageView.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void showPost(GenerateVO generateVO) {
+        this.generateVO = generateVO;
+        mTitleView.setText(generateVO.getTitle());
+        mUrlView.setText(generateVO.getUrl());
+        for (int i = 0; i < mTypeSpinner.getCount(); i++) {
+            if (((String) mTypeSpinner.getItemAtPosition(i)).equals(generateVO.getType())) {
+                mTypeSpinner.setSelection(i);
+            }
+        }
+        Glide.with(this).load(generateVO.getImgUrl()).into(imageView);
+
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDefaultTextEncodingName("utf-8");
+        webView.loadData(generateVO.getContent(), "text/html", "utf-8");
+    }
+
+    @Override
+    public void saveSuccess() {
+        Toast.makeText(GenerateActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }
 
-    @OnClick(R.id.image)
-    void changeImg() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        startActivityForResult(Intent.createChooser(intent, "选择图片"), SELECT_PHOTO);
+    @Override
+    public void saveFail() {
+        Toast.makeText(GenerateActivity.this, "保存失败，请检查网络~", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SELECT_PHOTO) {
-            if (resultCode == RESULT_OK) {
-                try {
-                    imageView.setImageBitmap(BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData())));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
+    public void showImageError() {
+        Toast.makeText(GenerateActivity.this, "图片加载失败，重新截个图~", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showInternetError() {
+        Toast.makeText(GenerateActivity.this, "网络有点问题哦~", Toast.LENGTH_SHORT).show();
+        mTypeSpinner.setSelection(0);
+    }
+
+    @Override
+    public void showAddSuccess(String tagName) {
+        Toast.makeText(GenerateActivity.this, "添加新标签成功!", Toast.LENGTH_SHORT).show();
+        if (adapter != null) {
+            adapter.remove("+ 创建新标签");
+            adapter.add(tagName);
+            adapter.add("+ 创建新标签");
+            adapter.notifyDataSetChanged();
+            mTypeSpinner.setSelection(adapter.getCount() - 2);
         }
+    }
+
+    @OnClick(R.id.generate_btn)
+    void generate() {
+        PostVO postVO = new PostVO(generateVO.getPostID(),
+                mTitleView.getText().toString(),
+                (String) mTypeSpinner.getSelectedItem(),
+                generateVO.getContent(),
+                generateVO.getImgUrl(),
+                mUrlView.getText().toString());
+        presenter.savePost(postVO, generateVO.getDescription());
     }
 
     /**
@@ -366,7 +520,7 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
 
     @Override
     public void setPresenter(GenerateContract.Presenter presenter) {
-
+        this.presenter = presenter;
     }
 
     @Override

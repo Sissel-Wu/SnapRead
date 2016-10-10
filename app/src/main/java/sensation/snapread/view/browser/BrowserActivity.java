@@ -3,25 +3,20 @@ package sensation.snapread.view.browser;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import sensation.snapread.R;
+import sensation.snapread.view.widget.SwipeBackActivity;
 
-public class BrowserActivity extends AppCompatActivity {
+public class BrowserActivity extends SwipeBackActivity {
     private static final String ARG_URL = "url";
     String url;
-
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -33,6 +28,7 @@ public class BrowserActivity extends AppCompatActivity {
         Intent intent = new Intent(activity, BrowserActivity.class);
         intent.putExtra(ARG_URL, url);
         activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in, R.anim.half_silde_out);
     }
 
     @Override
@@ -55,18 +51,10 @@ public class BrowserActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    @OnClick(R.id.fab)
-    void action(View view) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, url + "\n" + url + "\n\n--来自SnapRead");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(Intent.createChooser(intent, "分享内容到"));
-    }
-
     private void initWebView() {
         webView.loadUrl(url);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -88,5 +76,6 @@ public class BrowserActivity extends AppCompatActivity {
     @Override
     public void finish() {
         super.finish();
+        overridePendingTransition(R.anim.half_slide_in, R.anim.slide_out);
     }
 }

@@ -3,8 +3,8 @@ package sensation.snapread.contract;
 import java.util.List;
 
 import sensation.snapread.BasePresenter;
-import sensation.snapread.view.widget.BaseView;
 import sensation.snapread.model.vopo.CollectionListItemVO;
+import sensation.snapread.view.widget.BaseView;
 
 /**
  * 收藏的接口
@@ -15,18 +15,20 @@ public interface CollectionContract {
 
         void showCollections(List<CollectionListItemVO> collectionList);
 
-        void addCollections(List<CollectionListItemVO> collectionList);
-
         void showLoading();
 
         void hideLoading();
 
-        void deleteCollection(List<CollectionListItemVO> deleteList);
+        void deleteSuccess();
+
+        void deleteFail();
+
+        void showInternetError();
     }
 
     interface Presenter extends BasePresenter {
 
-        void loadCollections(String userID, int page);
+        void loadCollections(String userID);
 
         void deleteCollection(List<String> postIDList);
     }

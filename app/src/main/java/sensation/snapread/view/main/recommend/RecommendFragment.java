@@ -9,7 +9,6 @@ import android.widget.ListView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import sensation.snapread.R;
 import sensation.snapread.contract.RecommendContract;
 import sensation.snapread.view.NavigationInterface;
@@ -46,12 +45,6 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
 
     private void initListView() {
         //TODO 设置列表监听
-    }
-
-    //TODO 随机
-    @OnClick(R.id.fab)
-    void random() {
-
     }
 
     private void startPresenter() {

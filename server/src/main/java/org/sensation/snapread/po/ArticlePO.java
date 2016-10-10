@@ -1,5 +1,10 @@
 package org.sensation.snapread.po;
 
+import net.minidev.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,6 +19,7 @@ public class ArticlePO implements Serializable
     private String user_id;
     private String title;
     private String content;
+    private String description;
     private String type;
     private String post_url;
     private String post_img;
@@ -33,6 +39,29 @@ public class ArticlePO implements Serializable
         this.type = type;
         this.post_url = post_url;
         this.post_img = post_img;
+    }
+
+    /**
+     * 从content中提出文字
+     */
+    public String getText()
+    {
+        Document document = Jsoup.parseBodyFragment(content);
+
+        Element current = document.body();
+
+        return current.text();
+    }
+
+    public String getSummary()
+    {
+        return getText().substring(0, 50);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "post_id:" + post_id + " title:" + title + " summary:" + getText();
     }
 
     /*
@@ -116,5 +145,15 @@ public class ArticlePO implements Serializable
     public void setUser_id(String user_id)
     {
         this.user_id = user_id;
+    }
+
+    public String getDescription()
+    {
+        return description;
+    }
+
+    public void setDescription(String description)
+    {
+        this.description = description;
     }
 }

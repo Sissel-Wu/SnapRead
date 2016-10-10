@@ -5,7 +5,13 @@
     tools:context=".view.main.post.PostActivity">
     <item
         android:id="@+id/action_share"
-        android:icon="@drawable/paper_plane"
+        android:icon="@drawable/share_plane"
+        android:orderInCategory="200"
+        android:title="@string/action_settings"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_broswer"
+        android:icon="@drawable/globe"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="ifRoom" />

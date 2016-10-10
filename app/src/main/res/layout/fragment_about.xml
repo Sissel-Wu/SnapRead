@@ -26,10 +26,10 @@
                 <ImageView
                     android:id="@+id/intro"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="190dp"
                     android:layout_marginTop="50dp"
                     android:padding="10dp"
-                    android:src="@drawable/material" />
+                    android:src="@mipmap/ic_launcher" />
 
                 <TextView
                     android:id="@+id/name"
@@ -39,55 +39,18 @@
                     android:text="SnapRead"
                     android:textAlignment="center"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="20sp" />
+                    android:textSize="30sp" />
 
                 <TextView
-                    android:id="@+id/supporter"
+                    android:id="@+id/des"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/name"
-                    android:layout_marginTop="30dp"
-                    android:text="Server"
+                    android:text="更快一步的截屏文章收藏"
                     android:textAlignment="center"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="15sp" />
 
-                <TextView
-                    android:id="@+id/supporter1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/supporter"
-                    android:layout_marginTop="5dp"
-                    android:text="Sissel吴嘉荣"
-                    android:textAlignment="center" />
-
-                <TextView
-                    android:id="@+id/supporter2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/supporter1"
-                    android:text="Anthony倪安松"
-                    android:textAlignment="center" />
-
-                <TextView
-                    android:id="@+id/designer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/supporter2"
-                    android:layout_marginTop="10dp"
-                    android:text="Android Designer"
-                    android:textAlignment="center"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/designer_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/designer"
-                    android:layout_marginTop="5dp"
-                    android:text="Alan徐朱峰"
-                    android:textAlignment="center" />
             </RelativeLayout>
 
         </android.support.v7.widget.CardView>
@@ -100,7 +63,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="-20dp"
             android:elevation="5dp"
-            android:src="@android:drawable/ic_dialog_email"
+            android:src="@drawable/mail"
             app:fab_colorNormal="@color/colorAccent"
             app:fab_colorPressed="@color/colorAccent"
             app:rippleColor="@color/colorAccent" />
