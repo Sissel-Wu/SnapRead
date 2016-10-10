@@ -22,4 +22,6 @@ public interface DataService {
     boolean addTag(String userID, String tagName, String description, String tagImg);
 
     boolean deleteTags(String[] tagID);
+
+    ArticlePO editArticle(String userID, String postID, String title, String content, String postUrl, byte[] postImg, String type);
 }

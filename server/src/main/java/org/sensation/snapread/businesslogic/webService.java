@@ -69,7 +69,9 @@ public class WebService
                            @RequestParam("post_url") String postUrl,
                            @RequestParam("post_img") byte[] postImg,
                            @RequestParam("type") String type) {
-        return null;
+        ArticlePO editArticle = dataService.editArticle(userID, postID, title, content, postUrl, postImg, type);
+
+        return "success";
     }
 
     @RequestMapping("/deletePost")
