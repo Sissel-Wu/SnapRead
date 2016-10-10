@@ -7,6 +7,9 @@ import org.sensation.snapread.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.stream.FileImageOutputStream;
+import java.io.File;
+
 /**
  * Created by nians on 2016/10/7.
  */
@@ -64,7 +67,22 @@ public class WebService
                          @RequestParam("description") String description,
                          @RequestBody byte[] tagImg) {
 
+        this.byte2image(tagImg, "src/main/resources/static/p.jpg");
+
         return tagImg.length+"";
+    }
+
+    private void byte2image(byte[] data,String path){
+        if(data.length<3||path.equals("")) return;
+        try{
+            FileImageOutputStream imageOutput = new FileImageOutputStream(new File(path));
+            imageOutput.write(data, 0, data.length);
+            imageOutput.close();
+            System.out.println("Make Picture success,Please find image in " + path);
+        } catch(Exception ex) {
+            System.out.println("Exception: " + ex);
+            ex.printStackTrace();
+        }
     }
 
     @RequestMapping("/deleteTag")
