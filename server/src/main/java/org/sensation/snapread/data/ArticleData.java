@@ -6,6 +6,7 @@ import org.hibernate.criterion.Restrictions;
 import org.sensation.snapread.po.ArticlePO;
 import org.sensation.snapread.po.TagPO;
 import org.sensation.snapread.util.ResultMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;

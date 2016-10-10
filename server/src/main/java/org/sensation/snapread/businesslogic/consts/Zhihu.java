@@ -79,7 +79,7 @@ public class Zhihu extends Vendor
 
         Element imageElement = mainBody.getElementsByTag("img").first();
 
-        return imageElement.attr("src");
+        return imageElement == null ? "" : imageElement.attr("src");
     }
 
 }

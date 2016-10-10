@@ -76,7 +76,14 @@ public class ClassificationController {
 
         ArticlePO similarArticle = this.getMostSimilarArticle(wordVector);
 
-        return similarArticle.getType();
+        if (similarArticle == null)
+        {
+            return "null";
+        }
+        else
+        {
+            return similarArticle.getType();
+        }
     }
 
     private ArticlePO getMostSimilarArticle(ArrayList<Double> wordVector) {

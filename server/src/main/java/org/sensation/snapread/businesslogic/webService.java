@@ -1,23 +1,21 @@
 package org.sensation.snapread.businesslogic;
 
-import org.json.JSONObject;
 import org.sensation.snapread.businesslogic.classification.ClassificationController;
 import org.sensation.snapread.businesslogic.consts.Wechat;
 import org.sensation.snapread.businesslogic.consts.Zhihu;
 import org.sensation.snapread.data.DataService;
-import org.sensation.snapread.data.DataStub;
 import org.sensation.snapread.po.ArticlePO;
 import org.sensation.snapread.po.TagPO;
 import org.sensation.snapread.util.CompareText;
 import org.sensation.snapread.util.ResultMessage;
 import org.sensation.snapread.vo.ArticleOverviewVO;
 import org.sensation.snapread.vo.ArticleVO;
+import org.sensation.snapread.vo.ResponseVO;
 import org.sensation.snapread.vo.TagVO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.sensation.snapread.data.ArticleData;
-import org.sensation.snapread.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,21 +55,54 @@ public class WebService
     }
 
     @RequestMapping("/searchPost")
-    public ArticleVO searchPost(@RequestParam("keyword") String keyword) {
-        ArticlePO wechat = WebCrawler.searchInSogou(keyword, new Wechat());
-        ArticlePO zhihu = WebCrawler.searchInSogou(keyword, new Zhihu());
+    public ResponseVO searchPost(@RequestParam("keyword") String keyword) {
+        boolean useWechat = false;
+        boolean useZhihu = false;
+
+        ArticlePO wechat = null;
+        ArticlePO zhihu = null;
+
+        try
+        {
+            wechat = WebCrawler.searchInSogou(keyword, new Wechat());
+        }
+        catch (Exception e)
+        {
+            useZhihu = true;
+        }
+
+        try
+        {
+            zhihu = WebCrawler.searchInSogou(keyword, new Zhihu());
+        }
+        catch (Exception e)
+        {
+            useWechat = true;
+        }
 
         ClassificationController classifier = new ClassificationController();
 
-        if (CompareText.compare(keyword, wechat.getText()) > CompareText.compare(keyword, zhihu.getText()))
+        if (!useWechat && !useZhihu)
+        {
+            if (CompareText.compare(keyword, wechat.getText()) > CompareText.compare(keyword, zhihu.getText()))
+            {
+                useWechat = true;
+            }
+            else
+            {
+                useZhihu = true;
+            }
+        }
+
+        if (useWechat)
         {
             wechat.setType(classifier.getClassification(wechat.getText()));
-            return new ArticleVO(wechat);
+            return new ResponseVO("", "", "", new ArticleVO(wechat));
         }
         else
         {
             zhihu.setType(classifier.getClassification(zhihu.getText()));
-            return new ArticleVO(zhihu);
+            return new ResponseVO("", "", "", new ArticleVO(zhihu));
         }
     }
 

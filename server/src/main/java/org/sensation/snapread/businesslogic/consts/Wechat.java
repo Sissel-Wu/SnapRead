@@ -59,8 +59,15 @@ public class Wechat extends Vendor
 
         Element imageElement = mainBody.getElementsByTag("img").first();
 
-        String src = imageElement.attr("src");
-        return "".equals(src) ?
-                imageElement.attr("org.sensation.snapread.data-src") : src;
+        if (imageElement == null)
+        {
+            return "";
+        }
+        else
+        {
+            String src = imageElement.attr("src");
+            return "".equals(src) ?
+                    imageElement.attr("data-src") : src;
+        }
     }
 }
