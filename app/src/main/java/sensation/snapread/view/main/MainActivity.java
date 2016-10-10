@@ -32,6 +32,7 @@ import sensation.snapread.BasePresenter;
 import sensation.snapread.R;
 import sensation.snapread.presenter.CollectionPresenter;
 import sensation.snapread.presenter.PresenterCache;
+import sensation.snapread.presenter.RecommendPresenter;
 import sensation.snapread.presenter.TypePresenter;
 import sensation.snapread.service.SnapService;
 import sensation.snapread.view.NavigationInterface;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
     RecommendFragment recommendFragment;
     AboutFragment aboutFragment;
 
-    BasePresenter collectionPresenter, typePresenter;
+    BasePresenter collectionPresenter, typePresenter, recommendPresenter;
 
     PresenterCache cache;
     String[] historyArray;
@@ -216,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
                     layoutParams.setMargins(0, 0, 0, 0);
                     recommendFragment = RecommendFragment.newInstance();
                     recommendFragment.setNavigationInterface(this);
+                    recommendPresenter = new RecommendPresenter(recommendFragment);
                     transaction.add(R.id.fragment_content, recommendFragment);
                 } else {
                     layoutParams.setMargins(0, 0, 0, 0);

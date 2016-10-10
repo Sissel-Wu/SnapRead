@@ -186,15 +186,15 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/recommend_title"
                         android:layout_marginTop="10dp"
-                        android:text="网约车合法化" />
+                        android:text="暂无推荐文章" />
 
-                    <TextView
-                        android:id="@+id/recommend_2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/recommend_1"
-                        android:layout_marginTop="5dp"
-                        android:text="滴滴打车收购Uber" />
+                    <!--<TextView-->
+                    <!--android:id="@+id/recommend_2"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/recommend_1"-->
+                    <!--android:layout_marginTop="5dp"-->
+                    <!--android:text="滴滴打车收购Uber" />-->
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
         </RelativeLayout>
