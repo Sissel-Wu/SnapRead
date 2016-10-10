@@ -52,6 +52,11 @@ public class ArticlePO implements Serializable
         return current.text();
     }
 
+    public String getSummary()
+    {
+        return getText().substring(0, 50);
+    }
+
     @Override
     public String toString()
     {
@@ -140,4 +145,6 @@ public class ArticlePO implements Serializable
     {
         this.user_id = user_id;
     }
+
+
 }

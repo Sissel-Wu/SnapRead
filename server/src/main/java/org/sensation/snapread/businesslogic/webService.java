@@ -5,8 +5,10 @@ import org.sensation.snapread.businesslogic.consts.Wechat;
 import org.sensation.snapread.data.DataService;
 import org.sensation.snapread.data.DataStub;
 import org.sensation.snapread.po.ArticlePO;
+import org.sensation.snapread.po.TagPO;
 import org.sensation.snapread.vo.ArticleOverviewVO;
 import org.sensation.snapread.vo.ArticleVO;
+import org.sensation.snapread.vo.TagVO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -79,23 +81,34 @@ public class WebService
     }
 
     @RequestMapping("/getTag")
-    public String getTag(@RequestParam("user_id") String userID) {
+    public Iterator<TagVO> getTag(@RequestParam("user_id") String userID) {
+        Iterator<TagPO> tagPO = dataService.getTag(userID);
+        LinkedList<TagVO> result = new LinkedList<>();
 
-        return null;
+        while (tagPO.hasNext())
+        {
+            result.add(new TagVO(tagPO.next()));
+        }
+
+        return result.iterator();
     }
 
     @RequestMapping(value = "/addTag", method = RequestMethod.POST )
     public String addTag(@RequestParam("user_id") String userID,
                          @RequestParam("tag_name") String tagName,
                          @RequestParam("description") String description,
-                         @RequestBody byte[] tagImg) {
+                         @RequestParam("tag_img") String tagImg) {
 
-        return tagImg.length+"";
+        dataService.addTag(userID, tagName, description, tagImg);
+
+        return "success";
     }
 
     @RequestMapping("/deleteTag")
-    public String deleteTag(@RequestParam("tag_id") String tagID) {
-        return null;
+    public String deleteTag(@RequestParam("tag_id") String[] tagID) {
+        dataService.deleteTags(tagID);
+
+        return "success";
     }
 
     @RequestMapping("/getPostRecommend")
