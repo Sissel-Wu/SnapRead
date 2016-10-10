@@ -64,19 +64,37 @@ public class ArticleData implements DataService
     @Override
     public Iterator<TagPO> getTag(String userID)
     {
-        return null;
+        session.beginTransaction();
+        Criteria cri = session.createCriteria(TagPO.class);
+        cri.add(Restrictions.eq("user_id", userID));
+
+        return cri.list().iterator();
     }
 
     @Override
     public ResultMessage addTag(String userID, String tagName, String description, String tagImg)
     {
-        return null;
+        TagPO tagPO = new TagPO(userID, tagName, description, tagImg);
+
+        session.beginTransaction();
+        session.save(tagPO);
+        session.getTransaction().commit();
+        return new ResultMessage(true,"success");
     }
 
     @Override
-    public ResultMessage deleteTags(String[] tagID)
+    public ResultMessage deleteTags(String[] tagIDs)
     {
-        return null;
+        for (String tagID : tagIDs)
+        {
+            session.beginTransaction();
+            TagPO tmp = new TagPO();
+            tmp.setTag_id(tagID);
+            session.clear();
+            session.delete(tmp);
+            session.getTransaction().commit();
+        }
+        return new ResultMessage(true,"success");
     }
 
     public ResultMessage updateArticle(ArticlePO articlePO)

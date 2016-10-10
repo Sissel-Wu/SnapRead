@@ -1,6 +1,8 @@
 package org.sensation.snapread.po;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by nians on 2016/10/9.
@@ -16,8 +18,10 @@ public class TagPO implements Serializable{
     }
 
     public TagPO(String user_id, String tag_name, String tag_description, String tag_img) {
+        SimpleDateFormat myFmt=new SimpleDateFormat("yyyyMMddHHmmssSSSS");
+
         this.user_id = user_id;
-        // TODO: 2016/10/10 生成tag_id
+        this.tag_id = user_id + myFmt.format(new Date());
         this.tag_name = tag_name;
         this.tag_description = tag_description;
         this.tag_img = tag_img;
