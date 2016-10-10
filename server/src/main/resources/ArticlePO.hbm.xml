@@ -17,6 +17,9 @@
         <property name="content" type="java.lang.String">
             <column name="content" />
         </property>
+        <property name="description" type="java.lang.String">
+            <column name="description" />
+        </property>
         <property name="type" type="java.lang.String">
             <column name="type" />
         </property>

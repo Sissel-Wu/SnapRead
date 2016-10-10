@@ -16,6 +16,8 @@ public interface DataService {
 
     ResultMessage deleteArticles(String[] postID);
 
+    ResultMessage addArticle(ArticlePO articlePO);
+
     Iterator<TagPO> getTag(String userID);
 
     ResultMessage addTag(String userID, String tagName, String description, String tagImg);

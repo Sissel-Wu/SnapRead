@@ -98,7 +98,11 @@ public class ArticleData implements DataService
     @Override
     public Iterator<ArticlePO> getArticles(String userID)
     {
-        return null;
+        session.beginTransaction();
+        Criteria cri = session.createCriteria(ArticlePO.class);
+        cri.add(Restrictions.eq("user_id", userID));
+
+        return cri.list().iterator();
     }
 
     public ArticlePO findArticle(String post_id)

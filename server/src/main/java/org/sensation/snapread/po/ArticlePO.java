@@ -19,6 +19,7 @@ public class ArticlePO implements Serializable
     private String user_id;
     private String title;
     private String content;
+    private String description;
     private String type;
     private String post_url;
     private String post_img;
@@ -146,5 +147,13 @@ public class ArticlePO implements Serializable
         this.user_id = user_id;
     }
 
+    public String getDescription()
+    {
+        return description;
+    }
 
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
 }
