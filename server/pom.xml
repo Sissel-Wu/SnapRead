@@ -105,6 +105,14 @@
             <version>RELEASE</version>
         </dependency>
 
+        <dependency>
+            <groupId>javabuilder</groupId>
+            <artifactId>javabuilder</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/nians/Documents/GitHub/SnapRead/server/lib/IKAnalyzer2012_u6.jar</systemPath>
+        </dependency>
+
 
     </dependencies>
 

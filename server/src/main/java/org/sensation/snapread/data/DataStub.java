@@ -8,15 +8,15 @@ import java.util.Iterator;
 /**
  * Created by Sissel on 2016/10/9.
  */
-public class DataStub implements DataService
+public class DataStub
 {
-    @Override
+
     public Iterator<PassagePO> getCategoryPassage(String cateName)
     {
         return null;
     }
 
-    @Override
+
     public Iterator<ArticlePO> getArticles(String userID)
     {
         ArrayList<ArticlePO> list = new ArrayList<>();

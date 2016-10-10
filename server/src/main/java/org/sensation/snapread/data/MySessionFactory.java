@@ -33,4 +33,8 @@ public class MySessionFactory {
             StandardServiceRegistryBuilder.destroy( registry );
         }
     }
+
+    public static void main(String[] args) {
+        MySessionFactory.getSessionFactory();
+    }
 }
