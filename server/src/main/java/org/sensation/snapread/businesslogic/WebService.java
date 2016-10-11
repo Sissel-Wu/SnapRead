@@ -38,7 +38,7 @@ public class WebService
     DataService dataService = new ArticleData();
 
     @RequestMapping("/getPostList")
-    public Iterator<ArticleOverviewVO> getPostList(@RequestParam("user_id") String userID){
+    public ResponseVO getPostList(@RequestParam("user_id") String userID){
         Iterator<ArticlePO> articles = dataService.getArticles(userID);
         LinkedList<ArticleOverviewVO> result = new LinkedList<>();
 
@@ -47,7 +47,7 @@ public class WebService
             result.add(new ArticleOverviewVO(articles.next()));
         }
 
-        return result.iterator();
+        return ResponseVO.getSuccessResponse(result.iterator());
     }
 
     @RequestMapping("/getPost")
@@ -110,7 +110,7 @@ public class WebService
     }
 
     @RequestMapping("/editPost")
-    public ResultMessage editPost(@RequestParam("user_id") String userID,
+    public ResponseVO editPost(@RequestParam("user_id") String userID,
                                   @RequestParam("post_id") String postID,
                                   @RequestParam("title") String title,
                                   @RequestParam("content") String content,
@@ -122,21 +122,21 @@ public class WebService
         ResultMessage addResult = dataService.addArticle(editPO);
         if (!addResult.isSuccess())
         {
-            return dataService.updateArticle(editPO);
+            return ResponseVO.getSuccessResponse(dataService.updateArticle(editPO));
         }
         else
         {
-            return addResult;
+            return ResponseVO.getSuccessResponse(addResult);
         }
     }
 
     @RequestMapping("/deletePost")
-    public ResultMessage deletePost(@RequestParam("post_id") String[] postID) {
-        return dataService.deleteArticles(postID);
+    public ResponseVO deletePost(@RequestParam("post_id") String[] postID) {
+        return ResponseVO.getSuccessResponse(dataService.deleteArticles(postID));
     }
 
     @RequestMapping("/getTag")
-    public Iterator<TagVO> getTag(@RequestParam("user_id") String userID) {
+    public ResponseVO getTag(@RequestParam("user_id") String userID) {
         Iterator<TagPO> tagPO = dataService.getTag(userID);
         LinkedList<TagVO> result = new LinkedList<>();
 
@@ -145,15 +145,15 @@ public class WebService
             result.add(new TagVO(tagPO.next()));
         }
 
-        return result.iterator();
+        return ResponseVO.getSuccessResponse(result.iterator());
     }
 
     @RequestMapping(value = "/addTag", method = RequestMethod.POST )
-    public ResultMessage addTag(@RequestParam("user_id") String userID,
+    public ResponseVO addTag(@RequestParam("user_id") String userID,
                                 @RequestParam("tag_name") String tagName,
                                 @RequestParam("description") String description,
                                 @RequestParam("tag_img") String tagImg) {
-        return dataService.addTag(userID, tagName, description, tagImg);
+        return ResponseVO.getSuccessResponse(dataService.addTag(userID, tagName, description, tagImg));
     }
 
     private void byte2image(byte[] data,String path){
@@ -170,18 +170,18 @@ public class WebService
     }
 
     @RequestMapping("/deleteTag")
-    public ResultMessage deleteTag(@RequestParam("tag_id") String[] tagID) {
-        return dataService.deleteTags(tagID);
+    public ResponseVO deleteTag(@RequestParam("tag_id") String[] tagID) {
+        return ResponseVO.getSuccessResponse(dataService.deleteTags(tagID));
     }
 
     @RequestMapping("/getPostRecommend")
-    public String getPostRecommend(@RequestParam("post_id") String postID) {
-        return null;
+    public ResponseVO getPostRecommend(@RequestParam("post_id") String postID) {
+        return ResponseVO.getSuccessResponse(null);
     }
 
     @RequestMapping("/getUserRecommend")
-    public String getUserRecommend(@RequestParam("user_id") String userID) {
-        return null;
+    public ResponseVO getUserRecommend(@RequestParam("user_id") String userID) {
+        return ResponseVO.getSuccessResponse(null);
     }
 
 }

@@ -18,4 +18,9 @@ public class ResponseVO
         this.msg = msg;
         this.data = data;
     }
+
+    public static ResponseVO getSuccessResponse(Object data) {
+        ResponseVO result = new ResponseVO("success", "", "", data);
+        return result;
+    }
 }
