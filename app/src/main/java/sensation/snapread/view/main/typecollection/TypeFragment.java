@@ -55,8 +55,9 @@ public class TypeFragment extends Fragment implements TypeContract.View {
     @BindView(R.id.refresh_layout)
     SwipeRefreshLayout refreshLayout;
 
-    @BindView(R.id.no_data_image)
+    @BindView(R.id.no_data)
     View noDataView;
+
 
     NavigationInterface navigationInterface;
     TypeContract.Presenter presenter;
@@ -154,7 +155,7 @@ public class TypeFragment extends Fragment implements TypeContract.View {
                     public void onClick(View v) {
                         imgPath = "https://camo.githubusercontent.com/5f260ff56ba9dd4accf22a9572a9874556704bf9/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f333037323536362d386564663232356566306266646263332e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430";
                         clearElevation();
-                        card1.setElevation(18);
+                        card1.setElevation(20);
                     }
                 });
                 imageView2.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +163,7 @@ public class TypeFragment extends Fragment implements TypeContract.View {
                     public void onClick(View v) {
                         imgPath = "http://img.taopic.com/uploads/allimg/140226/234991-14022609204234.jpg";
                         clearElevation();
-                        card2.setElevation(18);
+                        card2.setElevation(20);
                     }
                 });
                 imageView3.setOnClickListener(new View.OnClickListener() {
@@ -170,7 +171,7 @@ public class TypeFragment extends Fragment implements TypeContract.View {
                     public void onClick(View v) {
                         imgPath = "http://img2.3lian.com/2014/f7/11/d/97.jpg";
                         clearElevation();
-                        card3.setElevation(18);
+                        card3.setElevation(20);
                     }
                 });
             }
@@ -325,8 +326,11 @@ public class TypeFragment extends Fragment implements TypeContract.View {
 
     @Override
     public void setTypesList(List<TypeItemVO> typeList) {
-        typeAdapter = new TypeAdapter(getContext(), R.layout.type_item, typeList, mTypeListView);
-        mTypeListView.setAdapter(typeAdapter);
+        if (typeList.size() != 0) {
+            noDataView.setVisibility(View.GONE);
+            typeAdapter = new TypeAdapter(getContext(), R.layout.type_item, typeList, mTypeListView);
+            mTypeListView.setAdapter(typeAdapter);
+        }
     }
 
     @Override

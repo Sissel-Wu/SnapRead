@@ -1,6 +1,9 @@
 package sensation.snapread.contract;
 
+import java.util.List;
+
 import sensation.snapread.BasePresenter;
+import sensation.snapread.model.vopo.CollectionListItemVO;
 import sensation.snapread.view.widget.BaseView;
 
 /**
@@ -9,10 +12,16 @@ import sensation.snapread.view.widget.BaseView;
  */
 public interface RecommendContract {
     interface View extends BaseView<Presenter> {
+        void showLoading();
 
+        void hideLoading();
+
+        void showInternetError();
+
+        void showList(List<CollectionListItemVO> recommendList);
     }
 
     interface Presenter extends BasePresenter {
-
+        void getRecommend(String userID);
     }
 }

@@ -48,7 +48,7 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
     @BindView(R.id.delete_btn)
     TextView deleteView;
 
-    @BindView(R.id.no_data_image)
+    @BindView(R.id.no_data)
     View noDataView;
 
     NavigationInterface navigationInterface;
@@ -231,7 +231,6 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
     public void showCollections(List<CollectionListItemVO> collectionList) {
         if (collectionList.size() != 0) {
             noDataView.setVisibility(View.GONE);
-        } else {
             collectionAdapter = new CollectionAdapter(getContext(), R.layout.collection_item, collectionList, mCollectionListView);
             mCollectionListView.setAdapter(collectionAdapter);
         }

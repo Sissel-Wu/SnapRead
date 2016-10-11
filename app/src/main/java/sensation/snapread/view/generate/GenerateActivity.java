@@ -126,8 +126,8 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
         initScrollView();
         initSpinner();
         initToolBar();
-        initImageOverlay();
         initFullImageView();
+        initImageOverlay();
     }
 
     private void initFullImageView() {
@@ -230,7 +230,7 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
                                 public void onClick(View v) {
                                     imgPath = "https://camo.githubusercontent.com/5f260ff56ba9dd4accf22a9572a9874556704bf9/687474703a2f2f75706c6f61642d696d616765732e6a69616e7368752e696f2f75706c6f61645f696d616765732f333037323536362d386564663232356566306266646263332e706e673f696d6167654d6f6772322f6175746f2d6f7269656e742f7374726970253743696d61676556696577322f322f772f31323430";
                                     clearElevation();
-                                    card1.setElevation(18);
+                                    card1.setElevation(20);
                                 }
                             });
                             imageView2.setOnClickListener(new View.OnClickListener() {
@@ -238,7 +238,7 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
                                 public void onClick(View v) {
                                     imgPath = "http://img.taopic.com/uploads/allimg/140226/234991-14022609204234.jpg";
                                     clearElevation();
-                                    card2.setElevation(18);
+                                    card2.setElevation(20);
                                 }
                             });
                             imageView3.setOnClickListener(new View.OnClickListener() {
@@ -246,7 +246,7 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
                                 public void onClick(View v) {
                                     imgPath = "http://img2.3lian.com/2014/f7/11/d/97.jpg";
                                     clearElevation();
-                                    card3.setElevation(18);
+                                    card3.setElevation(20);
                                 }
                             });
                         }
@@ -433,7 +433,12 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
                 mTypeSpinner.setSelection(i);
             }
         }
-        Glide.with(this).load(generateVO.getImgUrl()).into(imageView);
+        if (generateVO.getImgUrl().equals("")) {
+            imageView.setVisibility(View.GONE);
+            imageOverlayView.setVisibility(View.GONE);
+        } else {
+            Glide.with(this).load(generateVO.getImgUrl()).into(imageView);
+        }
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDefaultTextEncodingName("utf-8");
@@ -460,6 +465,7 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
 
     @Override
     public void showInternetError() {
+        hideLoading();
         Toast.makeText(GenerateActivity.this, "网络有点问题哦~", Toast.LENGTH_SHORT).show();
         mTypeSpinner.setSelection(0);
     }
@@ -478,13 +484,17 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
 
     @OnClick(R.id.generate_btn)
     void generate() {
-        PostVO postVO = new PostVO(generateVO.getPostID(),
-                mTitleView.getText().toString(),
-                (String) mTypeSpinner.getSelectedItem(),
-                generateVO.getContent(),
-                generateVO.getImgUrl(),
-                mUrlView.getText().toString());
-        presenter.savePost(postVO, generateVO.getDescription());
+        if (generateVO != null) {
+            PostVO postVO = new PostVO(generateVO.getPostID(),
+                    mTitleView.getText().toString(),
+                    (String) mTypeSpinner.getSelectedItem(),
+                    generateVO.getContent(),
+                    generateVO.getImgUrl(),
+                    mUrlView.getText().toString());
+            presenter.savePost(postVO, generateVO.getDescription());
+        } else {
+            showInternetError();
+        }
     }
 
     /**
