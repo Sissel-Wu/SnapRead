@@ -8,6 +8,20 @@ public class CompareText
 {
     public static int compare(String benchmark, String realText)
     {
-        return benchmark.length() - realText.length();
+        if (realText.contains(benchmark))
+        {
+            return benchmark.length();
+        }
+        else if (benchmark.equals(""))
+        {
+            return 0;
+        }
+        else
+        {
+            int left = compare(benchmark.substring(1), realText);
+            int right = compare(benchmark.substring(0, benchmark.length() - 1), realText);
+
+            return left > right ? left : right;
+        }
     }
 }

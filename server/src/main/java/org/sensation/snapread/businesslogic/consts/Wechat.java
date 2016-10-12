@@ -49,7 +49,10 @@ public class Wechat extends Vendor
     @Override
     public String getMainBody(String uri, Document document)
     {
-        return extractMainBody(document).toString();
+        String result = extractMainBody(document).toString();
+
+        // 更换 data-src 为 src
+        return result.replaceAll(" data-src", " src");
     }
 
     @Override
