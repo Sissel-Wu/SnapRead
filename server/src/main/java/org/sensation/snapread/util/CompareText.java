@@ -15,7 +15,7 @@ public class CompareText
         String[] benchmarkSet = new String[max];
         for (; index < max; ++index)
         {
-            if (benchmark.length() > index * 5)
+            if (benchmark.length() > index * 5 + 5)
             {
                 benchmarkSet[index] = benchmark.substring(index * 5, index * 5 + 5);
             }
@@ -26,11 +26,20 @@ public class CompareText
         }
 
         int sum = 0;
+        int bonus = 1;
         for (String mark : benchmarkSet)
         {
-            if (mark != null && !mark.equals("") && realText.contains(mark))
+            if (mark != null && !mark.equals(""))
             {
-                ++sum;
+                if (realText.contains(mark))
+                {
+                    sum += bonus;
+                    bonus++;
+                }
+                else
+                {
+                    bonus = 1;
+                }
             }
         }
 
