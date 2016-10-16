@@ -59,6 +59,8 @@ public class WebService
 
     @RequestMapping("/searchPost")
     public ResponseVO searchPost(@RequestParam("keyword") String keyword) {
+
+        System.out.println("received keywords are : " + keyword);
         boolean useWechat = false;
         boolean useZhihu = false;
 
@@ -68,32 +70,45 @@ public class WebService
         try
         {
             wechat = WebCrawler.searchInSogou(keyword, new Wechat());
+            useWechat = true;
         }
         catch (Exception e)
         {
-            useZhihu = true;
+            System.out.println("fail to recognize wechat");
+            useWechat = false;
         }
 
         try
         {
             zhihu = WebCrawler.searchInSogou(keyword, new Zhihu());
+            useZhihu = true;
         }
         catch (Exception e)
         {
-            useWechat = true;
+            System.out.println("fail to recognize zhihu");
+            useZhihu = false;
         }
 
         ClassificationController classifier = new ClassificationController();
 
+        // both fail
         if (!useWechat && !useZhihu)
+        {
+            System.out.println("returning null");
+            return new ResponseVO("", "", "", null);
+        }
+
+        if (useWechat && useZhihu)
         {
             if (CompareText.compare(keyword, wechat.getText()) > CompareText.compare(keyword, zhihu.getText()))
             {
                 useWechat = true;
+                useZhihu = false;
             }
             else
             {
                 useZhihu = true;
+                useWechat = false;
             }
         }
 
@@ -149,10 +164,11 @@ public class WebService
     }
 
     @RequestMapping(value = "/addTag", method = RequestMethod.GET )
-    public ResponseVO addTag(@RequestParam("user_id") String userID,
-                                @RequestParam("tag_name") String tagName,
-                                @RequestParam("description") String description,
-                                @RequestParam("tag_img") String tagImg) {
+    public ResponseVO addTag(@RequestParam("user_id") String tagImg,
+                                @RequestParam("tag_name") String userID,
+                                @RequestParam("description") String tagName,
+                                @RequestParam("tag_img") String description) {
+        System.err.println(userID);
         return ResponseVO.getSuccessResponse(dataService.addTag(userID, tagName, description, tagImg));
     }
 

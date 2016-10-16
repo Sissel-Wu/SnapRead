@@ -3,7 +3,7 @@
                                          "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
  <session-factory>
-  <property name="hbm2ddl.auto">create</property>
+  <property name="hbm2ddl.auto">none</property>
   <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
   <property name="hibernate.connection.password">9990</property>
   <property name="hibernate.connection.url"><![CDATA[jdbc:mysql://127.0.0.1:3306/snapread?useUnicode=true&characterEncoding=utf8]]></property>

@@ -20,7 +20,7 @@ public class TagPO implements Serializable{
     public TagPO(String user_id, String tag_name, String tag_description, String tag_img) {
         SimpleDateFormat myFmt=new SimpleDateFormat("yyyyMMddHHmmssSSSS");
 
-        this.setUser_id(user_id);
+        this.setUser_id(user_id.substring(0,10));
         this.tag_id = user_id + myFmt.format(new Date());
         this.tag_name = tag_name;
         this.tag_description = tag_description;
