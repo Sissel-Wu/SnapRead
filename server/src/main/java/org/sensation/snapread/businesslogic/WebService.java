@@ -67,6 +67,9 @@ public class WebService
         ArticlePO wechat = null;
         ArticlePO zhihu = null;
 
+        // avoid oversize keyword
+        keyword = keyword.length() > 40 ? keyword.substring(0, 40) : keyword;
+
         try
         {
             wechat = WebCrawler.searchInSogou(keyword, new Wechat());
