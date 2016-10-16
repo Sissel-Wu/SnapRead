@@ -4,9 +4,21 @@
 <!-- Generated 2016-2-25 21:24:07 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="org.sensation.snapread.po.TagPO" table="TAGPO">
-        <composite-id>
-            <key-property name="user_id" column="user_id" type="java.lang.String"></key-property>
-            <key-property name="tag_name" column="tag_name" type="java.lang.String"></key-property>
-        </composite-id>
+        <id name="tag_id" type="java.lang.String" access="field">
+            <column name="tag_id" />
+            <generator class="assigned" />
+        </id>
+        <property name="user_id" type="java.lang.String">
+            <column name="user_id" />
+        </property>
+        <property name="tag_name" type="java.lang.String">
+            <column name="tag_name" />
+        </property>
+        <property name="tag_description" type="java.lang.String">
+            <column name="tag_description" />
+        </property>
+        <property name="tag_img" type="java.lang.String">
+            <column name="tag_img" />
+        </property>
     </class>
 </hibernate-mapping>

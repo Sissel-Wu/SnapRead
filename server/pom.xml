@@ -24,9 +24,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>IKAnalyzer</groupId>
+            <groupId>org.wltea.analyzer</groupId>
             <artifactId>IKAnalyzer</artifactId>
-            <version>1.0</version>
+            <version>6.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>

@@ -32,7 +32,7 @@ public class ArticlePO implements Serializable
     public ArticlePO(String user_id, String title, String content, String post_url, String post_img, String type)
     {
         SimpleDateFormat myFmt=new SimpleDateFormat("yyyyMMddHHmmssSSSS");
-        this.user_id = user_id;
+        this.setUser_id(user_id);
         this.post_id = user_id + myFmt.format(new Date());
         this.title = title;
         this.content = content;
@@ -144,7 +144,7 @@ public class ArticlePO implements Serializable
 
     public void setUser_id(String user_id)
     {
-        this.user_id = user_id;
+        this.user_id = user_id.substring(0,10);
     }
 
     public String getDescription()

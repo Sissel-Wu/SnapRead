@@ -148,7 +148,7 @@ public class WebService
         return ResponseVO.getSuccessResponse(result.iterator());
     }
 
-    @RequestMapping(value = "/addTag", method = RequestMethod.POST )
+    @RequestMapping(value = "/addTag", method = RequestMethod.GET )
     public ResponseVO addTag(@RequestParam("user_id") String userID,
                                 @RequestParam("tag_name") String tagName,
                                 @RequestParam("description") String description,

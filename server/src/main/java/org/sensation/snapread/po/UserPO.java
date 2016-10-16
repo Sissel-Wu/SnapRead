@@ -12,6 +12,6 @@ public class UserPO implements Serializable{
     }
 
     public void setUserID(String userID) {
-        this.userID = userID;
+        this.userID = userID.substring(0,10);
     }
 }

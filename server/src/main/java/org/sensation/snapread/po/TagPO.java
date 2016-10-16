@@ -8,8 +8,8 @@ import java.util.Date;
  * Created by nians on 2016/10/9.
  */
 public class TagPO implements Serializable{
-    private String user_id;
     private String tag_id;
+    private String user_id;
     private String tag_name;
     private String tag_description;
     private String tag_img;
@@ -20,7 +20,7 @@ public class TagPO implements Serializable{
     public TagPO(String user_id, String tag_name, String tag_description, String tag_img) {
         SimpleDateFormat myFmt=new SimpleDateFormat("yyyyMMddHHmmssSSSS");
 
-        this.user_id = user_id;
+        this.setUser_id(user_id);
         this.tag_id = user_id + myFmt.format(new Date());
         this.tag_name = tag_name;
         this.tag_description = tag_description;
@@ -32,7 +32,7 @@ public class TagPO implements Serializable{
     }
 
     public void setUser_id(String user_id) {
-        this.user_id = user_id;
+        this.user_id = user_id.substring(0,10);
     }
 
     public String getTag_name() {
