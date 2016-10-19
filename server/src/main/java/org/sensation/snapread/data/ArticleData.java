@@ -119,7 +119,7 @@ public class ArticleData implements DataService
     {
         session.beginTransaction();
         Criteria cri = session.createCriteria(ArticlePO.class);
-        cri.add(Restrictions.eq("user_id", userID.substring(0,10)));
+        //cri.add(Restrictions.eq("user_id", userID.substring(0,10)));
 
         return cri.list().iterator();
     }

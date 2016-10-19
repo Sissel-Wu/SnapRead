@@ -3,6 +3,7 @@ package org.sensation.snapread.businesslogic;
 import org.sensation.snapread.businesslogic.classification.ClassificationController;
 import org.sensation.snapread.businesslogic.consts.Wechat;
 import org.sensation.snapread.businesslogic.consts.Zhihu;
+import org.sensation.snapread.data.ArticleCenter;
 import org.sensation.snapread.data.DataService;
 import org.sensation.snapread.po.ArticlePO;
 import org.sensation.snapread.po.TagPO;
@@ -37,32 +38,41 @@ public class WebService
     @Autowired
     DataService dataService = new ArticleData();
 
+    ArticleCenter articleCenter = ArticleCenter.getInstance();
+
     @RequestMapping("/getPostList")
     public ResponseVO getPostList(@RequestParam("user_id") String userID){
+        System.out.println("getPostList: " + userID);
+
         Iterator<ArticlePO> articles = dataService.getArticles(userID);
         LinkedList<ArticleOverviewVO> result = new LinkedList<>();
 
         while (articles.hasNext())
         {
-            result.add(new ArticleOverviewVO(articles.next()));
+            ArticlePO articlePO = articles.next();
+            articlePO.setContent(articleCenter.getFile(articlePO.getContent()));
+            result.add(new ArticleOverviewVO(articlePO));
         }
 
         return ResponseVO.getSuccessResponse(result.iterator());
     }
 
     @RequestMapping("/getPost")
-    public ArticleVO getPost(@RequestParam("post_id") String postID) {
-        ArticlePO articlePO = dataService.findArticle(postID);
+    public ResponseVO getPost(@RequestParam("post_id") String postID) {
+        System.out.println("getPost: " + postID);
 
-        return new ArticleVO(articlePO);
+        ArticlePO articlePO = dataService.findArticle(postID);
+        articlePO.setContent(articleCenter.getFile(articlePO.getContent()));
+
+        return ResponseVO.getSuccessResponse(new ArticleVO(articlePO));
     }
 
     @RequestMapping("/searchPost")
     public ResponseVO searchPost(@RequestParam("keyword") String keyword) {
 
         System.out.println("received keywords are : " + keyword);
-        boolean useWechat = false;
-        boolean useZhihu = false;
+        boolean useWechat;
+        boolean useZhihu;
 
         ArticlePO wechat = null;
         ArticlePO zhihu = null;
@@ -133,9 +143,14 @@ public class WebService
                                   @RequestParam("title") String title,
                                   @RequestParam("content") String content,
                                   @RequestParam("post_url") String postUrl,
-                                  @RequestParam("post_img") String postImg,
+                                  @RequestParam("img_url") String postImg,
+                                  @RequestParam("description") String desc,
                                   @RequestParam("type") String type) {
-        ArticlePO editPO = new ArticlePO(userID, title, content, postUrl, postImg, type);
+        // pre process the content to avoid too long the value for a column in database
+        String contentPath = articleCenter.putFile(content);
+
+        ArticlePO editPO = new ArticlePO(userID, title, contentPath, postUrl, postImg, type);
+        editPO.setDescription(desc);
 
         ResultMessage addResult = dataService.addArticle(editPO);
         if (!addResult.isSuccess())
