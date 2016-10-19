@@ -1,6 +1,7 @@
 package org.sensation.snapread.data;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.sensation.snapread.po.ArticlePO;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Article访问控制
@@ -130,7 +132,9 @@ public class ArticleData implements DataService
         Criteria cri = session.createCriteria(ArticlePO.class);
         cri.add(Restrictions.eq("post_id", post_id));
 
-        return cri.list().isEmpty() ? null : (ArticlePO) cri.list().get(0);
+        List list = cri.list();
+
+        return list.isEmpty() ? null : (ArticlePO) list.get(0);
     }
 
     public Iterator<ArticlePO> getAllArticle()

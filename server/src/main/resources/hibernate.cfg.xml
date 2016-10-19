@@ -9,6 +9,9 @@
   <property name="hibernate.connection.url"><![CDATA[jdbc:mysql://127.0.0.1:3306/snapread?useUnicode=true&characterEncoding=utf8]]></property>
   <property name="hibernate.connection.username">root</property>
   <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+  <property name="hibernate.show_sql">true</property>
+  <property name="hibernate.format_sql">true</property>
+  <property name="hibernate.use_sql_comments">true</property>
   <mapping resource="ArticlePO.hbm.xml"/>
   <mapping resource="TagPO.hbm.xml"/>
   <mapping resource="UserPO.hbm.xml"/>
