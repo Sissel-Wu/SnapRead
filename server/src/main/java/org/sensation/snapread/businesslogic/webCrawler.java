@@ -33,7 +33,7 @@ public class WebCrawler
         String title = vendor.getTitle(contentDoc);
         String mainBody = vendor.getMainBody(contentUri, contentDoc);
 
-        return new ArticlePO(null, title, mainBody, contentUri, pictureUri, null);
+        return new ArticlePO(null, title, "", mainBody, contentUri, pictureUri, null);
     }
 
     // stockade project

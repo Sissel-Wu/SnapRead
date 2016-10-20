@@ -131,11 +131,12 @@ public class WebService
     public ResponseVO editPost(@RequestParam("user_id") String userID,
                                   @RequestParam("post_id") String postID,
                                   @RequestParam("title") String title,
+                                  @RequestParam("description") String description,
                                   @RequestParam("content") String content,
                                   @RequestParam("post_url") String postUrl,
-                                  @RequestParam("post_img") String postImg,
+                                  @RequestParam("img_url") String postImg,
                                   @RequestParam("type") String type) {
-        ArticlePO editPO = new ArticlePO(userID, title, content, postUrl, postImg, type);
+        ArticlePO editPO = new ArticlePO(userID, title, description, content, postUrl, postImg, type);
 
         ResultMessage addResult = dataService.addArticle(editPO);
         if (!addResult.isSuccess())
