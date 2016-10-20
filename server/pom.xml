@@ -24,9 +24,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.wltea.analyzer</groupId>
+            <groupId>IKAnalyzer</groupId>
             <artifactId>IKAnalyzer</artifactId>
-            <version>6.0</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -142,6 +142,12 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/java/org/sensation/snapread/data</directory>
+                <targetPath>org/sensation/snapread/data</targetPath>
+            </resource>
+        </resources>
     </build>
 
 </project>

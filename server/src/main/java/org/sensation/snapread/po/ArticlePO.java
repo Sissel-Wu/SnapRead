@@ -56,7 +56,9 @@ public class ArticlePO implements Serializable
 
     public String getSummary()
     {
-        return getText().substring(0, 50);
+        String text = getText();
+
+        return text.length() > 50 ? text.substring(0, 50) : text;
     }
 
     @Override
