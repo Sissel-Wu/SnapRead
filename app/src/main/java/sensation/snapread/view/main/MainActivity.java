@@ -28,7 +28,7 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import sensation.snapread.BasePresenter;
+import sensation.snapread.presenter.BasePresenter;
 import sensation.snapread.R;
 import sensation.snapread.presenter.CollectionPresenter;
 import sensation.snapread.presenter.PresenterCache;

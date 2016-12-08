@@ -436,8 +436,8 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDefaultTextEncodingName("UTF -8");
-//        webView.loadUrl(generateVO.getContent());
-        webView.loadData(generateVO.getContent(), "text/html; charset=UTF-8", null);
+        webView.loadUrl(generateVO.getContent());
+//        webView.loadData(generateVO.getContent(), "text/html; charset=UTF-8", null);
     }
 
     @Override

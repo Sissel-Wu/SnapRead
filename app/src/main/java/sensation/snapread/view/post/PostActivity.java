@@ -187,9 +187,10 @@ public class PostActivity extends SwipeBackActivity implements PostContract.View
     public void showPost(PostVO postVO) {
         this.postVO = postVO;
         mTypeView.setText(postVO.getType());
-        mUrlView.setText(postVO.getUrl());
-//        webView.loadUrl(postVO.getContent());
-        webView.loadData(postVO.getContent(), "text/html; charset=UTF-8", null);
+        String url = postVO.getUrl().split(".com/")[0] + ".com";
+        mUrlView.setText(url);
+        webView.loadUrl(postVO.getContent());
+//        webView.loadData(postVO.getContent(), "text/html; charset=UTF-8", null);
     }
 
     @Override

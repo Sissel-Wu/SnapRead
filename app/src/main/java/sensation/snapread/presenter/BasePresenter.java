@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sensation.snapread;
+package sensation.snapread.presenter;
 
 public interface BasePresenter {
 

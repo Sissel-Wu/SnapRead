@@ -2,7 +2,7 @@ package sensation.snapread.contract;
 
 import java.util.List;
 
-import sensation.snapread.BasePresenter;
+import sensation.snapread.presenter.BasePresenter;
 import sensation.snapread.model.vopo.GenerateVO;
 import sensation.snapread.model.vopo.PostVO;
 import sensation.snapread.view.widget.BaseView;

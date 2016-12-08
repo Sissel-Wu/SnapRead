@@ -92,8 +92,8 @@ public class CollectionPresenter implements CollectionContract.Presenter {
 
     @Override
     public void start() {
-//        loadCollections(PresenterCache.getInstance().getUserID());
-        loadDefaultCollections();
+        loadCollections(PresenterCache.getInstance().getUserID());
+//        loadDefaultCollections();
     }
 
     private void loadDefaultCollections() {
