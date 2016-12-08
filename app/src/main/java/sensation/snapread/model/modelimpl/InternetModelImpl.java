@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Alan on 2016/9/17.
  */
 public class InternetModelImpl {
-    static final String BASE_URL = "http://120.27.117.222:8080/api/";
+    static final String BASE_URL = "http://139.129.40.103:8080/api/";
     static final int DEFAULT_TIMEOUT = 10;
     Retrofit retrofit;
 
@@ -28,6 +28,14 @@ public class InternetModelImpl {
     }
 
     protected InternetModelImpl() {
-        this(BASE_URL);
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+        httpClientBuilder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
+
+        retrofit = new Retrofit.Builder()
+                .client(httpClientBuilder.build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .baseUrl(BASE_URL)
+                .build();
     }
 }

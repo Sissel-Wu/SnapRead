@@ -7,6 +7,7 @@ import rx.Subscriber;
 import sensation.snapread.contract.SearchContract;
 import sensation.snapread.model.ModelRepository;
 import sensation.snapread.model.RepositoryFactory;
+import sensation.snapread.model.modeimpl_stub.SearchStub;
 import sensation.snapread.model.modelinterface.SearchModel;
 import sensation.snapread.model.response.Response;
 import sensation.snapread.model.vopo.CollectionListItemVO;
@@ -115,7 +116,8 @@ public class SearchPresenter implements SearchContract.Presenter {
     }
 
     private void update() {
-        repository = RepositoryFactory.getDBRepository();
-        searchModel = repository.getSearchModel();
+//        repository = RepositoryFactory.getDBRepository();
+//        searchModel = repository.getSearchModel();
+        searchModel = new SearchStub();
     }
 }

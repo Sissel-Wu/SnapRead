@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -196,6 +197,7 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
 
     @Override
     public void showList(List<CollectionListItemVO> recommendList) {
+        Log.d("SnapRead", "showList: " + recommendList.size());
         if (recommendList.size() != 0) {
             noDataView.setVisibility(View.GONE);
             CollectionAdapter adapter = new CollectionAdapter(getContext(), R.layout.collection_item, recommendList, mRecommendListView);

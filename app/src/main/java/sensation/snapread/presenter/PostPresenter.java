@@ -3,8 +3,7 @@ package sensation.snapread.presenter;
 import rx.Subscriber;
 import sensation.snapread.contract.PostContract;
 import sensation.snapread.model.ModelRepository;
-import sensation.snapread.model.MyApplication;
-import sensation.snapread.model.RepositoryFactory;
+import sensation.snapread.model.modeimpl_stub.PostStub;
 import sensation.snapread.model.modelinterface.PostModel;
 import sensation.snapread.model.response.Response;
 import sensation.snapread.model.vopo.ContentPO;
@@ -37,7 +36,7 @@ public class PostPresenter implements PostContract.Presenter {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
@@ -55,7 +54,8 @@ public class PostPresenter implements PostContract.Presenter {
     }
 
     private void update() {
-        repository = RepositoryFactory.getProperRepository(MyApplication.getContext());
-        postModel = repository.getPostModelImpl();
+//        repository = RepositoryFactory.getProperRepository(MyApplication.getContext());
+//        postModel = repository.getPostModelImpl();
+        postModel = new PostStub();
     }
 }

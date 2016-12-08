@@ -138,8 +138,8 @@ public class PostActivity extends SwipeBackActivity implements PostContract.View
 
     private void initContent() {
         mTitleView.setText(title);
-        webView.loadUrl("http://www.baidu.com");
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDefaultTextEncodingName("UTF -8");
     }
 
     private void initToolbar() {
@@ -162,7 +162,6 @@ public class PostActivity extends SwipeBackActivity implements PostContract.View
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_SUBJECT, postVO.getTitle());
-                    intent.putExtra(Intent.EXTRA_STREAM, postVO.getImgUrl());
                     intent.putExtra(Intent.EXTRA_TEXT, postVO.getTitle() + "\n" + postVO.getUrl() + "\n\n--来自SnapRead");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(Intent.createChooser(intent, "分享内容到"));
@@ -187,8 +186,10 @@ public class PostActivity extends SwipeBackActivity implements PostContract.View
     @Override
     public void showPost(PostVO postVO) {
         this.postVO = postVO;
+        mTypeView.setText(postVO.getType());
         mUrlView.setText(postVO.getUrl());
-        webView.loadData(postVO.getContent(), "text/html", "utf-8");
+//        webView.loadUrl(postVO.getContent());
+        webView.loadData(postVO.getContent(), "text/html; charset=UTF-8", null);
     }
 
     @Override

@@ -33,7 +33,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -108,12 +107,7 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
         mGenerateBtn.requestFocus();
         initFetch();
         initViews();
-
-        //stub
-        List<String> list = new ArrayList<>();
-        list.add("设计");
-        list.add("学习");
-        showTypes(list);
+        presenter.start();
     }
 
     private void initFetch() {
@@ -441,8 +435,9 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
         }
 
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setDefaultTextEncodingName("utf-8");
-        webView.loadData(generateVO.getContent(), "text/html", "utf-8");
+        webView.getSettings().setDefaultTextEncodingName("UTF -8");
+//        webView.loadUrl(generateVO.getContent());
+        webView.loadData(generateVO.getContent(), "text/html; charset=UTF-8", null);
     }
 
     @Override

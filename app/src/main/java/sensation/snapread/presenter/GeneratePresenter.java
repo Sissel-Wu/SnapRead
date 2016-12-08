@@ -44,6 +44,7 @@ public class GeneratePresenter implements GenerateContract.Presenter {
             generateView.showInternetError();
         }
         generateModel = repository.getGenerateModelImpl();
+//        generateModel = new GenerateStub();
         generateView = view;
         generateView.setPresenter(this);
     }
@@ -56,6 +57,21 @@ public class GeneratePresenter implements GenerateContract.Presenter {
     @Override
     public void ocr(String path) {
         generateView.showLoading("正在识别...");
+        //stub
+//        generateModel.ocr(new Subscriber<OcrResponse>() {
+//            @Override
+//            public void onCompleted() {
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//            }
+//
+//            @Override
+//            public void onNext(OcrResponse ocrResponse) {
+//                searchPost("");
+//            }
+//        }, null);
         File file = new File(path);
         Compressor
                 .getDefault(MyApplication.getContext())
@@ -75,6 +91,7 @@ public class GeneratePresenter implements GenerateContract.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
+                                Log.d("SnapRead", "onError: ");
                             }
 
                             @Override
@@ -137,7 +154,6 @@ public class GeneratePresenter implements GenerateContract.Presenter {
         generateModel.addType(new Subscriber<Response<Object>>() {
             @Override
             public void onCompleted() {
-
             }
 
             @Override
@@ -162,6 +178,7 @@ public class GeneratePresenter implements GenerateContract.Presenter {
 
             @Override
             public void onError(Throwable e) {
+                Log.d("SnapRead", "onError: " + e.toString());
                 generateView.hideLoading();
                 generateView.showInternetError();
             }
@@ -177,8 +194,10 @@ public class GeneratePresenter implements GenerateContract.Presenter {
     @Override
     public void savePost(PostVO postVO, String description) {
         generateView.showLoading("正在保存文章...");
+        Log.d("SnapRead", "savePost: " + postVO.getPostID() + " " + postVO.getTitle() + " " + postVO.getType() + " " + postVO.getContent() + " " + description + " " + postVO.getImgUrl() + " " + postVO.getUrl());
         final PostPO postPO = new PostPO(postVO.getPostID(), postVO.getTitle(), postVO.getType(),
                 postVO.getContent(), description, postVO.getImgUrl(), postVO.getUrl());
+
         generateModel.savePost(new Subscriber<Response<Object>>() {
             @Override
             public void onCompleted() {
@@ -186,6 +205,7 @@ public class GeneratePresenter implements GenerateContract.Presenter {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 generateView.hideLoading();
                 generateView.saveFail();
             }
@@ -193,8 +213,13 @@ public class GeneratePresenter implements GenerateContract.Presenter {
             @Override
             public void onNext(Response<Object> objectResponse) {
                 generateView.hideLoading();
-                generateView.saveSuccess();
-                postPO.save();
+                if (objectResponse != null) {
+                    generateView.saveSuccess();
+                    postPO.save();
+                } else {
+                    Log.d("SnapRead", "onNext: ");
+                    generateView.saveFail();
+                }
             }
         }, PresenterCache.getInstance().getUserID(), postPO);
     }

@@ -6,7 +6,7 @@ import java.util.List;
 import rx.Subscriber;
 import sensation.snapread.contract.RecommendContract;
 import sensation.snapread.model.ModelRepository;
-import sensation.snapread.model.RepositoryFactory;
+import sensation.snapread.model.modeimpl_stub.RecommendStub;
 import sensation.snapread.model.modelinterface.RecommendModel;
 import sensation.snapread.model.response.Response;
 import sensation.snapread.model.vopo.CollectionListItemVO;
@@ -61,7 +61,8 @@ public class RecommendPresenter implements RecommendContract.Presenter {
     }
 
     private void update() {
-        repository = RepositoryFactory.getInternetRepository();
-        recommendModel = repository.getRecommendModel();
+//        repository = RepositoryFactory.getInternetRepository();
+//        recommendModel = repository.getRecommendModel();
+        recommendModel = new RecommendStub();
     }
 }
