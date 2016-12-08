@@ -147,6 +147,10 @@
                 <directory>src/main/java/org/sensation/snapread/data</directory>
                 <targetPath>org/sensation/snapread/data</targetPath>
             </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>.</targetPath>
+            </resource>
         </resources>
     </build>
 
