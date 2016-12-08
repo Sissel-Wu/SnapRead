@@ -26,6 +26,9 @@
 package org.sensation.snapread.businesslogic.classification;
 
 import org.sensation.snapread.data.ArticleData;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.util.FileCopyUtils;
 import org.wltea.analyzer.core.IKSegmenter;
 import org.wltea.analyzer.core.Lexeme;
 import org.sensation.snapread.po.ArticlePO;
@@ -56,7 +59,12 @@ public class ClassificationController {
 
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(new File("selected_dic.txt")));
+            Resource resource = new ClassPathResource("selected_dic.txt");
+            File tempFile = File.createTempFile("selected_dic",".txt");
+            FileOutputStream stream = new FileOutputStream(tempFile);
+            FileCopyUtils.copy(resource.getInputStream(),stream);
+
+            BufferedReader reader = new BufferedReader(new FileReader(tempFile));
             for(String s = reader.readLine();s!=null;s = reader.readLine()) {
                 String[] temp = s.split(",");
                 dic.put(temp[0], Integer.parseInt(temp[1]));
