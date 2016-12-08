@@ -156,7 +156,7 @@ public class WebService
                 articleRequest.img_url,
                 articleRequest.type);
 
-        /*ResultMessage addResult = dataService.addArticle(editPO);
+        ResultMessage addResult = dataService.addArticle(editPO);
         if (!addResult.isSuccess())
         {
             return ResponseVO.getSuccessResponse(dataService.updateArticle(editPO));
@@ -164,9 +164,9 @@ public class WebService
         else
         {
             return ResponseVO.getSuccessResponse(addResult);
-        }*/
+        }
 
-        return ResponseVO.getSuccessResponse("success");
+        //return ResponseVO.getSuccessResponse("success");
     }
 
     @RequestMapping("/deletePost")
@@ -191,12 +191,12 @@ public class WebService
     public ResponseVO addTag(@RequestBody TagRequestVO tagRequest) {
         System.out.println(tagRequest);
 
-        /*return ResponseVO.getSuccessResponse(dataService.addTag(
+        return ResponseVO.getSuccessResponse(dataService.addTag(
                 tagRequest.user_id,
                 tagRequest.tag_name,
                 tagRequest.description,
-                tagRequest.tag_img));*/
-        return ResponseVO.getSuccessResponse("success");
+                tagRequest.tag_img));
+        //return ResponseVO.getSuccessResponse("success");
     }
 
     private void byte2image(byte[] data,String path){
