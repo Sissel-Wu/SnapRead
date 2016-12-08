@@ -8,10 +8,7 @@ import org.sensation.snapread.po.ArticlePO;
 import org.sensation.snapread.po.TagPO;
 import org.sensation.snapread.util.CompareText;
 import org.sensation.snapread.util.ResultMessage;
-import org.sensation.snapread.vo.ArticleOverviewVO;
-import org.sensation.snapread.vo.ArticleVO;
-import org.sensation.snapread.vo.ResponseVO;
-import org.sensation.snapread.vo.TagVO;
+import org.sensation.snapread.vo.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -127,7 +124,7 @@ public class WebService
         }
     }
 
-    @RequestMapping("/editPost")
+    /*@RequestMapping("/editPost")
     public ResponseVO editPost(@RequestParam("user_id") String userID,
                                   @RequestParam("post_id") String postID,
                                   @RequestParam("title") String title,
@@ -147,6 +144,29 @@ public class WebService
         {
             return ResponseVO.getSuccessResponse(addResult);
         }
+    }*/
+    @RequestMapping("/editPost")
+    public ResponseVO editPost(@RequestBody ArticleRequestVO articleRequest) {
+        ArticlePO editPO = new ArticlePO(
+                articleRequest.user_id,
+                articleRequest.title,
+                articleRequest.description,
+                articleRequest.content,
+                articleRequest.post_url,
+                articleRequest.img_url,
+                articleRequest.type);
+
+        /*ResultMessage addResult = dataService.addArticle(editPO);
+        if (!addResult.isSuccess())
+        {
+            return ResponseVO.getSuccessResponse(dataService.updateArticle(editPO));
+        }
+        else
+        {
+            return ResponseVO.getSuccessResponse(addResult);
+        }*/
+
+        return ResponseVO.getSuccessResponse("success");
     }
 
     @RequestMapping("/deletePost")
@@ -167,13 +187,16 @@ public class WebService
         return ResponseVO.getSuccessResponse(result.iterator());
     }
 
-    @RequestMapping(value = "/addTag", method = RequestMethod.GET )
-    public ResponseVO addTag(@RequestParam("user_id") String tagImg,
-                                @RequestParam("tag_name") String userID,
-                                @RequestParam("description") String tagName,
-                                @RequestParam("tag_img") String description) {
-        System.err.println(userID);
-        return ResponseVO.getSuccessResponse(dataService.addTag(userID, tagName, description, tagImg));
+    @RequestMapping(value = "/addTag", method = RequestMethod.POST )
+    public ResponseVO addTag(@RequestBody TagRequestVO tagRequest) {
+        System.out.println(tagRequest);
+
+        /*return ResponseVO.getSuccessResponse(dataService.addTag(
+                tagRequest.user_id,
+                tagRequest.tag_name,
+                tagRequest.description,
+                tagRequest.tag_img));*/
+        return ResponseVO.getSuccessResponse("success");
     }
 
     private void byte2image(byte[] data,String path){

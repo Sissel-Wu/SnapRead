@@ -1,5 +1,6 @@
 package org.sensation.snapread.vo;
 
+import com.sun.tools.javac.tree.JCTree;
 import org.sensation.snapread.po.TagPO;
 
 /**
@@ -13,11 +14,23 @@ public class TagVO
     public String description;
     public String tag_img;
 
+    public TagVO()
+    {
+    }
+
     public TagVO(TagPO tagPO)
     {
         this.tag_id = tagPO.getTag_id();
         this.tag_name = tagPO.getTag_name();
         this.description = tagPO.getTag_description();
         this.tag_img = tagPO.getTag_img();
+    }
+
+    @Override
+    public String toString() {
+        return "tag_id: " + tag_id + "/n"
+                + "tag_name: " + tag_name + "/n"
+                + "description: " + description + "/n"
+                + "tag_img: " + tag_img + "/n";
     }
 }
