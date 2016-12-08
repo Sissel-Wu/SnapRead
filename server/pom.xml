@@ -37,10 +37,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -112,12 +108,14 @@
             <version>RELEASE</version>
         </dependency>
 
+        <!-- important!!!
+        maven远程库并没有这个依赖，需要先本地安装，找到IKAnalyzer的jar包，到那个目录(/lib)下用maven安装到本地仓库中
+        $ mvn install:install-file -DgroupId=org.wltea -DartifactId=IKAnalyzer -Dversion=5.0 -Dpackaging=jar -Dfile=IKAnalyzer2012_u6.jar
+         -->
         <dependency>
-            <groupId>wltea</groupId>
-            <artifactId>wltea</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/IKAnalyzer2012_u6.jar</systemPath>
+            <groupId>org.wltea</groupId>
+            <artifactId>IKAnalyzer</artifactId>
+            <version>5.0</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
