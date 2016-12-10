@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  */
 public class Zhihu extends Vendor
 {
-    private static final String search_0_ID = "zhihu_qa_title_0";
+    private static final String search_0_ID = "zhihu_title_answer_0";
     private static final String img_0_ID = "zhihu_qa_img_0";
     private static final String search_template = "http://zhihu.sogou.com/zhihu?query={key_word}";
 

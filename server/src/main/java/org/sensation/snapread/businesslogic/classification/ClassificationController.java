@@ -86,24 +86,42 @@ public class ClassificationController {
 
         if (similarArticle == null)
         {
+            System.out.println("no similar found, returning null");
             return "null";
         }
         else
         {
+            System.out.println("find similar with tag : " + similarArticle.getType());
             return similarArticle.getType();
         }
     }
 
+    public String getFeatureString(String passage) {
+        // view the analyzed passage
+        System.out.println("analyzing:\n " + passage);
+
+        String luceneCutResult = this.getLuceneCutResult(passage);
+
+        ArrayList<Double> wordVector = this.getWordVector(luceneCutResult);
+
+        String featureString = this.toFeatureString(wordVector);
+
+        return featureString;
+    }
+
+
+
     private ArticlePO getMostSimilarArticle(ArrayList<Double> wordVector) {
         Iterator<ArticlePO> it = data.getAllArticle();
-        double minDis = Double.MAX_VALUE;
+        double maxSimilarity = Double.MIN_VALUE;
         ArticlePO similarPointer = null;
         while (it.hasNext()) {
             ArticlePO po = it.next();
             ArrayList<Double> a2 = this.fromFeatureString(po.getFeature(),wordVector.size());
-            double tempDis = this.calculateCosineDistance(wordVector, a2);
-            if(tempDis<minDis) {
-                minDis = tempDis;
+            double tempSimilarity = this.calculateCosineDistance(wordVector, a2);
+            System.out.println("similarity with post "+po.getTitle()+" is "+tempSimilarity);
+            if(tempSimilarity>maxSimilarity) {
+                maxSimilarity = tempSimilarity;
                 similarPointer = po;
             }
         }
@@ -144,8 +162,10 @@ public class ClassificationController {
     private String toFeatureString(ArrayList<Double> src) {
         StringBuilder builder = new StringBuilder();
         for(int i=0;i<src.size();i++) {
-            if(src.get(i)!=0)
-                builder.append(i + "," + src.get(i) + ";");
+            if(src.get(i)!=0) {
+                DecimalFormat df = new DecimalFormat("#####0.00");
+                builder.append(i + "," + df.format(src.get(i)) + ";");
+            }
         }
         builder.deleteCharAt(builder.lastIndexOf(";"));
 
@@ -161,8 +181,7 @@ public class ClassificationController {
         for (String pair : pairs) {
             String[] temp = pair.split(",");
             int index = Integer.parseInt(temp[0]);
-            result.remove(index);
-            result.add(index,Double.parseDouble(temp[1]));
+            result.set(index,Double.parseDouble(temp[1]));
         }
 
         return result;
