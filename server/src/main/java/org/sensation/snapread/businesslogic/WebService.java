@@ -48,10 +48,10 @@ public class WebService
     }
 
     @RequestMapping("/getPost")
-    public ArticleVO getPost(@RequestParam("post_id") String postID) {
+    public ResponseVO getPost(@RequestParam("post_id") String postID) {
         ArticlePO articlePO = dataService.findArticle(postID);
 
-        return new ArticleVO(articlePO);
+        return ResponseVO.getSuccessResponse(new ArticleVO(articlePO));
     }
 
     @RequestMapping("/searchPost")
@@ -85,7 +85,8 @@ public class WebService
         }
         catch (Exception e)
         {
-            System.out.println("fail to recognize zhihu");
+            System.err.println("fail to recognize zhihu");
+            e.printStackTrace();
             useZhihu = false;
         }
 
@@ -124,27 +125,6 @@ public class WebService
         }
     }
 
-    /*@RequestMapping("/editPost")
-    public ResponseVO editPost(@RequestParam("user_id") String userID,
-                                  @RequestParam("post_id") String postID,
-                                  @RequestParam("title") String title,
-                                  @RequestParam("description") String description,
-                                  @RequestParam("content") String content,
-                                  @RequestParam("post_url") String postUrl,
-                                  @RequestParam("img_url") String postImg,
-                                  @RequestParam("type") String type) {
-        ArticlePO editPO = new ArticlePO(userID, title, description, content, postUrl, postImg, type);
-
-        ResultMessage addResult = dataService.addArticle(editPO);
-        if (!addResult.isSuccess())
-        {
-            return ResponseVO.getSuccessResponse(dataService.updateArticle(editPO));
-        }
-        else
-        {
-            return ResponseVO.getSuccessResponse(addResult);
-        }
-    }*/
     @RequestMapping("/editPost")
     public ResponseVO editPost(@RequestBody ArticleRequestVO articleRequest) {
         ArticlePO editPO = new ArticlePO(
@@ -156,7 +136,13 @@ public class WebService
                 articleRequest.img_url,
                 articleRequest.type);
 
-        /*ResultMessage addResult = dataService.addArticle(editPO);
+        ClassificationController controller = new ClassificationController();
+        String feature = controller.getFeatureString(editPO.getText());
+
+        editPO.setFeature(feature);
+        editPO.setDescription(editPO.getSummary());
+
+        ResultMessage addResult = dataService.addArticle(editPO);
         if (!addResult.isSuccess())
         {
             return ResponseVO.getSuccessResponse(dataService.updateArticle(editPO));
@@ -164,9 +150,9 @@ public class WebService
         else
         {
             return ResponseVO.getSuccessResponse(addResult);
-        }*/
+        }
 
-        return ResponseVO.getSuccessResponse("success");
+        //return ResponseVO.getSuccessResponse("success");
     }
 
     @RequestMapping("/deletePost")
@@ -191,12 +177,12 @@ public class WebService
     public ResponseVO addTag(@RequestBody TagRequestVO tagRequest) {
         System.out.println(tagRequest);
 
-        /*return ResponseVO.getSuccessResponse(dataService.addTag(
+        return ResponseVO.getSuccessResponse(dataService.addTag(
                 tagRequest.user_id,
                 tagRequest.tag_name,
                 tagRequest.description,
-                tagRequest.tag_img));*/
-        return ResponseVO.getSuccessResponse("success");
+                tagRequest.tag_img));
+        //return ResponseVO.getSuccessResponse("success");
     }
 
     private void byte2image(byte[] data,String path){

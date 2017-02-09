@@ -19,7 +19,7 @@ public class ArticleOverviewVO
     {
         this.post_id = articlePO.getPost_id();
         this.title = articlePO.getTitle();
-        this.description = articlePO.getSummary();
+        this.description = articlePO.getDescription();
         this.type = articlePO.getType();
         this.post_url = articlePO.getPost_url();
         this.post_img = articlePO.getPost_img();
