@@ -108,6 +108,7 @@ public class SearchActivity extends SwipeBackActivity implements SearchContract.
         mSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                View sharedView = view.findViewById(R.id.type_circle);
                 CollectionListItemVO item = (CollectionListItemVO) parent.getItemAtPosition(position);
 
                 //进入文章
@@ -116,13 +117,15 @@ public class SearchActivity extends SwipeBackActivity implements SearchContract.
                             startActivity(SearchActivity.this,
                                     item.getCollectionID(),
                                     item.getTitle(),
-                                    item.getImgUrl());
+                                    item.getImgUrl(),
+                                    sharedView);
                 } else {
                     PostActivity.
                             startActivity(SearchActivity.this,
                                     item.getCollectionID(),
                                     item.getTitle(),
-                                    "");
+                                    "",
+                                    sharedView);
                 }
             }
         });

@@ -83,7 +83,10 @@
                         android:layout_height="wrap_content"
                         android:layout_toEndOf="@+id/url_text"
                         android:background="@null"
+                        android:ellipsize="end"
                         android:hint=" 文章网址"
+                        android:maxLines="1"
+                        android:singleLine="true"
                         android:textColor="@android:color/darker_gray"
                         android:textColorHint="@color/colorPrimaryLight"
                         android:textSize="14sp" />

@@ -9,6 +9,7 @@ import sensation.snapread.model.modelimpl.InternetCollectionModelImpl;
 import sensation.snapread.model.modelimpl.InternetGenerateModelImpl;
 import sensation.snapread.model.modelimpl.InternetPostModelImpl;
 import sensation.snapread.model.modelimpl.InternetRecommendModelImpl;
+import sensation.snapread.model.modelimpl.InternetSearchModelImpl;
 import sensation.snapread.model.modelimpl.InternetTypeModelImpl;
 import sensation.snapread.model.modelinterface.CollectionModel;
 import sensation.snapread.model.modelinterface.GenerateModel;
@@ -84,6 +85,6 @@ public class InternetRepository implements ModelRepository {
 
     @Override
     public SearchModel getSearchModel() {
-        return null;
+        return new InternetSearchModelImpl();
     }
 }

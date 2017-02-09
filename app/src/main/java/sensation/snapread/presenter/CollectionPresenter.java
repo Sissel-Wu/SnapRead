@@ -1,17 +1,20 @@
 package sensation.snapread.presenter;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
 import sensation.snapread.contract.CollectionContract;
 import sensation.snapread.model.ModelRepository;
-import sensation.snapread.model.modeimpl_stub.CollectionStub;
+import sensation.snapread.model.RepositoryFactory;
 import sensation.snapread.model.modelinterface.CollectionModel;
 import sensation.snapread.model.response.Response;
 import sensation.snapread.model.vopo.CollectionListItemVO;
 import sensation.snapread.model.vopo.CollectionListPO;
-import sensation.snapread.model.vopo.PostPO;
 
 /**
  * 加载收藏列表，进入列表详情
@@ -48,6 +51,8 @@ public class CollectionPresenter implements CollectionContract.Presenter {
             @Override
             public void onNext(Response<List<CollectionListPO>> listResponse) {
                 List<CollectionListPO> data = listResponse.getData();
+                Gson gson = new Gson();
+                Log.d("SnapRead", "getCollections: " + gson.toJson(data));
                 List<CollectionListItemVO> collectionList = new ArrayList<>();
                 for (CollectionListPO po : data) {
                     collectionList.add(po.toVO());
@@ -79,9 +84,9 @@ public class CollectionPresenter implements CollectionContract.Presenter {
                 collectionView.hideLoading();
                 if (objectResponse != null) {
                     //删除本地数据
-                    for (String id : postIDList) {
-                        PostPO.deleteAll(PostPO.class, "postid = ?", id);
-                    }
+//                    for (String id : postIDList) {
+//                        PostPO.deleteAll(PostPO.class, "postid = ?", id);
+//                    }
                     collectionView.deleteSuccess();
                 } else {
                     collectionView.deleteFail();
@@ -93,6 +98,7 @@ public class CollectionPresenter implements CollectionContract.Presenter {
     @Override
     public void start() {
         loadCollections(PresenterCache.getInstance().getUserID());
+        Log.d("SnapRead", "userID: " + PresenterCache.getInstance().getUserID());
 //        loadDefaultCollections();
     }
 
@@ -119,8 +125,8 @@ public class CollectionPresenter implements CollectionContract.Presenter {
      * 更新网络和本地数据库连接状态
      */
     private void update() {
-//        repository = RepositoryFactory.getProperRepository(MyApplication.getContext());
-//        collectionModel = repository.getCollectionModel();
-        collectionModel = new CollectionStub();
+        repository = RepositoryFactory.getInternetRepository();
+        collectionModel = repository.getCollectionModel();
+//        collectionModel = new CollectionStub();
     }
 }

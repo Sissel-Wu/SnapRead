@@ -6,6 +6,7 @@ import java.util.List;
 import rx.Subscriber;
 import sensation.snapread.model.modelinterface.TypeModel;
 import sensation.snapread.model.response.Response;
+import sensation.snapread.model.vopo.AddTagPO;
 import sensation.snapread.model.vopo.TypePO;
 
 /**
@@ -13,7 +14,7 @@ import sensation.snapread.model.vopo.TypePO;
  */
 public class TypeStub implements TypeModel {
     @Override
-    public void addType(Subscriber<Response<Object>> subscriber, String userID, String name, String description, String imgUrl) {
+    public void addType(Subscriber<Response<Object>> subscriber, AddTagPO addTagPO) {
         subscriber.onNext(null);
     }
 

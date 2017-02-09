@@ -8,6 +8,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import sensation.snapread.model.modelinterface.TypeModel;
 import sensation.snapread.model.response.Response;
+import sensation.snapread.model.vopo.AddTagPO;
 import sensation.snapread.model.vopo.TypePO;
 
 /**
@@ -16,7 +17,7 @@ import sensation.snapread.model.vopo.TypePO;
 public class DBTypeModelImpl implements TypeModel {
 
     @Override
-    public void addType(Subscriber<Response<Object>> subscriber, String userID, String name, String description, String imgUrl) {
+    public void addType(Subscriber<Response<Object>> subscriber, AddTagPO addTagPO) {
         subscriber.onNext(null);
     }
 

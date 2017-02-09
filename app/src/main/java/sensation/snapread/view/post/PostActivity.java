@@ -6,6 +6,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -68,7 +69,7 @@ public class PostActivity extends SwipeBackActivity implements PostContract.View
     String postID, title, imgUrl;
     PostContract.Presenter presenter;
 
-    public static void startActivity(Activity activity, String postID, String title, String imgUrl) {
+    public static void startActivity(Activity activity, String postID, String title, String imgUrl, View sharedView) {
         Intent intent = new Intent(activity, PostActivity.class);
         intent.putExtra(ARG_ID, postID);
         intent.putExtra(ARG_TITLE, title);
@@ -76,6 +77,9 @@ public class PostActivity extends SwipeBackActivity implements PostContract.View
 
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.half_silde_out);
+//        String transitionName = activity.getString(R.string.img_transition);
+//        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(activity, sharedView, transitionName);
+//        activity.startActivity(intent, transitionActivityOptions.toBundle());
     }
 
     @Override
@@ -121,6 +125,7 @@ public class PostActivity extends SwipeBackActivity implements PostContract.View
         Intent intent = getIntent();
         if (intent != null) {
             postID = intent.getStringExtra(ARG_ID);
+            Log.d("SnapRead", "preLoad: " + postID);
             title = intent.getStringExtra(ARG_TITLE);
             imgUrl = intent.getStringExtra(ARG_IMG);
             if (!imgUrl.equals("")) {
@@ -189,7 +194,7 @@ public class PostActivity extends SwipeBackActivity implements PostContract.View
         mTypeView.setText(postVO.getType());
         String url = postVO.getUrl().split(".com/")[0] + ".com";
         mUrlView.setText(url);
-        webView.loadUrl(postVO.getContent());
+        webView.loadUrl(postVO.getUrl());
 //        webView.loadData(postVO.getContent(), "text/html; charset=UTF-8", null);
     }
 

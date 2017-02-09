@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,12 +33,14 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import sensation.snapread.R;
 import sensation.snapread.contract.GenerateContract;
 import sensation.snapread.model.vopo.GenerateVO;
@@ -84,6 +87,7 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
 
     float startY = 0, endY = 0;
     MaterialDialog waitDialog, dialog;
+    SweetAlertDialog swalDialog;
     GenerateVO generateVO;
     ArrayAdapter<String> adapter;
     Uri mImageUri = null;
@@ -420,6 +424,8 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
     @Override
     public void showPost(GenerateVO generateVO) {
         this.generateVO = generateVO;
+        Gson gson = new Gson();
+        Log.d("SnapRead", "showPost: " + gson.toJson(generateVO.getType()));
         mTitleView.setText(generateVO.getTitle());
         mUrlView.setText(generateVO.getUrl());
         for (int i = 0; i < mTypeSpinner.getCount(); i++) {
@@ -436,7 +442,7 @@ public class GenerateActivity extends AppCompatActivity implements GenerateContr
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDefaultTextEncodingName("UTF -8");
-        webView.loadUrl(generateVO.getContent());
+        webView.loadUrl(generateVO.getUrl());
 //        webView.loadData(generateVO.getContent(), "text/html; charset=UTF-8", null);
     }
 

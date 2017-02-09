@@ -2,22 +2,34 @@ package sensation.snapread.presenter;
 
 import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.zelory.compressor.Compressor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import sensation.snapread.contract.GenerateContract;
 import sensation.snapread.model.ModelRepository;
 import sensation.snapread.model.MyApplication;
 import sensation.snapread.model.RepositoryFactory;
-import sensation.snapread.model.modeimpl_stub.GenerateStub;
 import sensation.snapread.model.modelinterface.GenerateModel;
 import sensation.snapread.model.response.OcrResponse;
 import sensation.snapread.model.response.Response;
+import sensation.snapread.model.vopo.AddTagPO;
 import sensation.snapread.model.vopo.GeneratePO;
+import sensation.snapread.model.vopo.LinePO;
 import sensation.snapread.model.vopo.PostPO;
 import sensation.snapread.model.vopo.PostVO;
+import sensation.snapread.model.vopo.RegionPO;
+import sensation.snapread.model.vopo.SavePostPO;
 import sensation.snapread.model.vopo.TypePO;
+import sensation.snapread.model.vopo.WordPO;
 
 /**
  * Created by Alan on 2016/9/29.
@@ -33,8 +45,8 @@ public class GeneratePresenter implements GenerateContract.Presenter {
         if (!repository.isConnected(MyApplication.getContext())) {
             generateView.showInternetError();
         }
-//        generateModel = repository.getGenerateModelImpl();
-        generateModel = new GenerateStub();
+        generateModel = repository.getGenerateModelImpl();
+//        generateModel = new GenerateStub();
         generateView = view;
         generateView.setPresenter(this);
     }
@@ -48,70 +60,70 @@ public class GeneratePresenter implements GenerateContract.Presenter {
     public void ocr(String path) {
         generateView.showLoading("正在识别...");
         //stub
-        generateModel.ocr(new Subscriber<OcrResponse>() {
-            @Override
-            public void onCompleted() {
-            }
+//        generateModel.ocr(new Subscriber<OcrResponse>() {
+//            @Override
+//            public void onCompleted() {
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//            }
+//
+//            @Override
+//            public void onNext(OcrResponse ocrResponse) {
+//                searchPost("");
+//            }
+//        }, null);
+        File file = new File(path);
+        Compressor
+                .getDefault(MyApplication.getContext())
+                .compressToFileAsObservable(file)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<File>() {
+                    @Override
+                    public void call(File file) {
+                        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+                        MultipartBody.Part body = MultipartBody.Part.createFormData("picture", file.getName(), requestBody);
+                        generateModel.ocr(new Subscriber<OcrResponse>() {
+                            @Override
+                            public void onCompleted() {
+                            }
 
-            @Override
-            public void onError(Throwable e) {
-            }
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.d("SnapRead", "onError: ");
+                            }
 
-            @Override
-            public void onNext(OcrResponse ocrResponse) {
-                searchPost("");
-            }
-        }, null);
-//        File file = new File(path);
-//        Compressor
-//                .getDefault(MyApplication.getContext())
-//                .compressToFileAsObservable(file)
-//                .subscribeOn(Schedulers.io())
-//                .unsubscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Action1<File>() {
-//                    @Override
-//                    public void call(File file) {
-//                        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-//                        MultipartBody.Part body = MultipartBody.Part.createFormData("picture", file.getName(), requestBody);
-//                        generateModel.ocr(new Subscriber<OcrResponse>() {
-//                            @Override
-//                            public void onCompleted() {
-//                            }
-//
-//                            @Override
-//                            public void onError(Throwable e) {
-//                                Log.d("SnapRead", "onError: ");
-//                            }
-//
-//                            @Override
-//                            public void onNext(OcrResponse ocrResponse) {
-//                                String content = "";
-//                                List<RegionPO> regionList = ocrResponse.getRegions();
-//                                for (RegionPO region : regionList) {
-//                                    List<LinePO> lineList = region.getLines();
-//                                    for (LinePO line : lineList) {
-//                                        List<WordPO> wordList = line.getWords();
-//                                        for (WordPO word : wordList) {
-//                                            content += word.getText();
-//                                        }
-//                                    }
-//                                }
-//                                int size = content.length();
-//                                int start = (int) (size * 0.2),
-//                                        end = (int) (size * 0.8);
-//                                searchPost(content.substring(start, end));
-//                            }
-//                        }, body);
-//
-//                    }
-//                }, new Action1<Throwable>() {
-//                    @Override
-//                    public void call(Throwable throwable) {
-//                        generateView.hideLoading();
-//                        generateView.showImageError();
-//                    }
-//                });
+                            @Override
+                            public void onNext(OcrResponse ocrResponse) {
+                                String content = "";
+                                List<RegionPO> regionList = ocrResponse.getRegions();
+                                for (RegionPO region : regionList) {
+                                    List<LinePO> lineList = region.getLines();
+                                    for (LinePO line : lineList) {
+                                        List<WordPO> wordList = line.getWords();
+                                        for (WordPO word : wordList) {
+                                            content += word.getText();
+                                        }
+                                    }
+                                }
+                                int size = content.length();
+                                int start = (int) (size * 0.2),
+                                        end = (int) (size * 0.8);
+                                searchPost(content.substring(start, end));
+                            }
+                        }, body);
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        generateView.hideLoading();
+                        generateView.showImageError();
+                    }
+                });
     }
 
 
@@ -137,6 +149,12 @@ public class GeneratePresenter implements GenerateContract.Presenter {
                 generateView.showTypes(types);
             }
         }, userID);
+        //stub
+//        List<String> types = new ArrayList<>();
+//        types.add("生活");
+//        types.add("设计");
+//        types.add("城市");
+//        generateView.showTypes(types);
     }
 
     @Override
@@ -155,7 +173,7 @@ public class GeneratePresenter implements GenerateContract.Presenter {
             public void onNext(Response<Object> objectResponse) {
                 generateView.showAddSuccess(typeName);
             }
-        }, PresenterCache.getInstance().getUserID(), typeName, description, imgPath);
+        }, new AddTagPO(PresenterCache.getInstance().getUserID(), typeName, description, imgPath));
     }
 
     @Override
@@ -179,6 +197,7 @@ public class GeneratePresenter implements GenerateContract.Presenter {
                 generateView.showPost(generatePOResponse.getData().toVO());
             }
         }, keyword);
+//        generateView.showPost(new GenerateVO("1111", "nice", "设计", "http://www.baidu.com", "shiyixia", "", "http://www.baidu.com"));
     }
 
     @Override
@@ -211,6 +230,6 @@ public class GeneratePresenter implements GenerateContract.Presenter {
                     generateView.saveFail();
                 }
             }
-        }, PresenterCache.getInstance().getUserID(), postPO);
+        }, new SavePostPO(PresenterCache.getInstance().getUserID(), postPO.getPostID(), postPO.getTitle(), postPO.getContent(), postPO.getDescription(), postPO.getUrl(), postPO.getImgUrl(), postPO.getType()));
     }
 }

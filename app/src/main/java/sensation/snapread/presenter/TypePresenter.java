@@ -6,9 +6,11 @@ import java.util.List;
 import rx.Subscriber;
 import sensation.snapread.contract.TypeContract;
 import sensation.snapread.model.ModelRepository;
-import sensation.snapread.model.modeimpl_stub.TypeStub;
+import sensation.snapread.model.MyApplication;
+import sensation.snapread.model.RepositoryFactory;
 import sensation.snapread.model.modelinterface.TypeModel;
 import sensation.snapread.model.response.Response;
+import sensation.snapread.model.vopo.AddTagPO;
 import sensation.snapread.model.vopo.TypeItemVO;
 import sensation.snapread.model.vopo.TypePO;
 
@@ -80,7 +82,7 @@ public class TypePresenter implements TypeContract.Presenter {
                 }
                 view.hideLoading();
             }
-        }, PresenterCache.getInstance().getUserID(), typeName, description, imgPath);
+        }, new AddTagPO(PresenterCache.getInstance().getUserID(), typeName, description, imgPath));
     }
 
 
@@ -90,8 +92,8 @@ public class TypePresenter implements TypeContract.Presenter {
     }
 
     private void update() {
-//        repository = RepositoryFactory.getProperRepository(MyApplication.getContext());
-//        typeModel = repository.getTypeModel();
-        typeModel = new TypeStub();
+        repository = RepositoryFactory.getProperRepository(MyApplication.getContext());
+        typeModel = repository.getTypeModel();
+//        typeModel = new TypeStub();
     }
 }

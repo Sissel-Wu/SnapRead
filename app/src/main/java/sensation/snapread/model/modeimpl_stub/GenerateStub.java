@@ -8,8 +8,9 @@ import rx.Subscriber;
 import sensation.snapread.model.modelinterface.GenerateModel;
 import sensation.snapread.model.response.OcrResponse;
 import sensation.snapread.model.response.Response;
+import sensation.snapread.model.vopo.AddTagPO;
 import sensation.snapread.model.vopo.GeneratePO;
-import sensation.snapread.model.vopo.PostPO;
+import sensation.snapread.model.vopo.SavePostPO;
 import sensation.snapread.model.vopo.TypePO;
 
 /**
@@ -48,13 +49,13 @@ public class GenerateStub implements GenerateModel {
     }
 
     @Override
-    public void addType(Subscriber<Response<Object>> subscriber, String userID, String name, String description, String imageUrl) {
+    public void addType(Subscriber<Response<Object>> subscriber, AddTagPO addTagPO) {
         subscriber.onNext(null);
     }
 
     @Override
     public void searchPost(Subscriber<Response<GeneratePO>> subscriber, String keyword) {
-        String url = "http://mp.weixin.qq.com/s?src=3&timestamp=1481176417&ver=1&signature=ylf6wmfnv1RRFpAXg2X4ROfRJPGOcy7*XrY5biHC6SJGoRMQNa5j7jtShJOIk0W1bT4N2ZWFYmRa2Vtqv6ecCNqgGUX8slYQK1e2gkYPtmnmv8RuCa3mZ1h40n19wD8rAW*NJfAYhzFVJfCVk6*Pcg==";
+        String url = "http://www.uisdc.com/comprehensive-material-design-note";
         GeneratePO generatePO = new GeneratePO(
                 "1",
                 "Material Design",
@@ -68,7 +69,7 @@ public class GenerateStub implements GenerateModel {
     }
 
     @Override
-    public void savePost(Subscriber<Response<Object>> subscriber, String userID, PostPO PostPO) {
+    public void savePost(Subscriber<Response<Object>> subscriber, SavePostPO savePostPO) {
         subscriber.onNext(new Response<>("", "", "", null));
     }
 }

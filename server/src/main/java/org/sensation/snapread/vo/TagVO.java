@@ -1,6 +1,5 @@
 package org.sensation.snapread.vo;
 
-import com.sun.tools.javac.tree.JCTree;
 import org.sensation.snapread.po.TagPO;
 
 /**

@@ -14,30 +14,30 @@ import sensation.snapread.model.vopo.CollectionListPO;
 public class RecommendStub implements RecommendModel {
     @Override
     public void getRecommend(Subscriber<Response<List<CollectionListPO>>> subscriber, String userID) {
-        String url1 = "http://mp.weixin.qq.com/s?src=3&timestamp=1476096565&ver=1&signature=NqC3FuLyuFhEnWvCZPlL92UiGg4jsOwmtVn0UON2YGglnAMfQrgg7DAb2FgfiozvKLzPIj0RKBZg-dKJMRI0V21ljmlF-wKnBByygEna*NgXVBgbZdfhoNa8x8V0NN9zsFpxi6GhUpRn8cv47r12Sw==",
-                url2 = "http://mp.weixin.qq.com/s?src=3&timestamp=1476096658&ver=1&signature=XZ9zR8rqGdJufQTL9gbtM*d1s20XBIlk2u8tdtd9XX*urNyI7bNGAvDUCN2YECNAr0RrirdjNlU6aXnGYqPqM85WIopvfumPKpK0rstiJhA6q-yTtenWTwIKWXNoE2wMJUrN1D8jZnKaEv-UJxSJ8NOjS5slRONxs3fBfA9xIQ0=",
-                url3 = "http://mp.weixin.qq.com/s?src=3&timestamp=1476096586&ver=1&signature=pPMS2YaiedmMkcOzdsb4pv6rFv4exIwJ1XUaYJ3EsDtbV-yWYUvonoKE2EOGWZTcZfEdlj7Aisfs-EIgiyHEJQH75stt9blk3O2RUaeCc5JldgtT*nnYNutRuNs3QF2bhJZhRM6p1wxgLoMpvDE2Kd5d9rqqWOdN*VqTj4t-azo=";
+        String url4 = "https://www.zhihu.com/question/49354299",
+                url5 = "https://3g.ishuo.cn/doc/xujwbiqf.html",
+                url6 = "http://m.jiemian.com/article/629387.html";
         CollectionListPO collection1 = new CollectionListPO(
-                "1",
-                "Material Design是什么鬼？",
+                "4",
+                "为什么 Material Design 在国内没有被大量推行？",
                 "设计",
-                "谷歌的Material Design 发布已久，氢OS的设计也将借鉴这种设计语言的精髓。你能秒懂Material Design要求的Do/Don't吗？",
+                "对照国外高使用频率的app大多都采用了Material Design或类Material Design风格，而国内仅有像酷安，bilibili和网易云音乐，类似app完全或部分采取了MD设计，而QQ，微信等甚至还有iOS风格的残余？",
                 "http://mmbiz.qpic.cn/mmbiz/XQcVPz66ISApeqZzzbv0wmibicHn2bHQ1yrZvPWNejibvTo4mwCGhYrGUkPoJCEpLxSichHv31CGRicwlf5AYT0CiaIg/640?tp=webp&wxfrom=5",
-                url1);
+                url4);
         CollectionListPO collection2 = new CollectionListPO(
-                "2",
+                "5",
                 "城市在下雨，而我在想你",
                 "城市",
                 "这个秋夜，有雨敲窗。",
                 "http://mmsns.qpic.cn/mmsns/zKBwDdu8U8Ggbq2hSHdIjyg9VPPMLNmnGB3XGqpq9G1AcTdeOtykWw/0?wx_lazy=1",
-                url2);
+                url5);
         CollectionListPO collection3 = new CollectionListPO(
-                "3",
-                "越野生活",
+                "6",
+                "“越野”让生活变得有情趣！",
                 "生活",
-                "越野车是摩托产品中一个特殊的群体。如果说跨骑车是“男人车”，那么，隶属于跨骑车系的越野车就是“男人中的男人”",
+                "但凡男人味十足的男人都喜欢越野，外人眼里很不理解，说什么瞎胡闹，浪费了钱财，还处处充满危险",
                 "http://mmbiz.qpic.cn/mmbiz_jpg/LMlfPMR39LP3JP9ibibPLPOODibnLEFSnMRxrjjTAibQwU8CHbyugJsZAdaF0fIqeqh4rLSNRlXmjTibWg655ZD5Nicw/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1",
-                url3);
+                url6);
         List<CollectionListPO> collectionListPOList = new ArrayList<>();
         collectionListPOList.add(collection1);
         collectionListPOList.add(collection2);

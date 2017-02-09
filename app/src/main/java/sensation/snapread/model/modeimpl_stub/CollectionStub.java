@@ -15,8 +15,8 @@ public class CollectionStub implements CollectionModel {
     @Override
     public void getCollectionList(Subscriber<Response<List<CollectionListPO>>> subscriber, String userID) {
         String url1 = "http://www.uisdc.com/comprehensive-material-design-note",
-                url2 = "http://mp.weixin.qq.com/s?src=3&timestamp=1481176417&ver=1&signature=ylf6wmfnv1RRFpAXg2X4ROfRJPGOcy7*XrY5biHC6SJGoRMQNa5j7jtShJOIk0W1bT4N2ZWFYmRa2Vtqv6ecCNqgGUX8slYQK1e2gkYPtmnmv8RuCa3mZ1h40n19wD8rAW*NJfAYhzFVJfCVk6*Pcg==",
-                url3 = "http://mp.weixin.qq.com/s?src=3&timestamp=1476091862&ver=1&signature=7bv*mIDRQB8Id2VSw0akrdI*wI-bIWRkVOrPOQFNL5svgaOWly9C4AvfTasvGLEBXQOPZp7NYyxCscLKcejj0cJ7EyhTzZ0s4ICFUL*3eaxJD0G7wVPFWjqck8Di5HheUsNJtZ2fzFDNdb9LMsUB1ZiJFm3BpyXmJ6IWAwanPr0=";
+                url2 = "http://pianke.me/posts/57e1cc4801334dfc3b9f3e8d",
+                url3 = "https://wapbaike.baidu.com/item/%E5%9F%8E%E5%B8%82%E7%9A%84%E8%AE%B0%E5%BF%86/2896859";
         CollectionListPO collection1 = new CollectionListPO(
                 "1",
                 "Material Design",
@@ -33,7 +33,7 @@ public class CollectionStub implements CollectionModel {
                 url2);
         CollectionListPO collection3 = new CollectionListPO(
                 "3",
-                "城市与记忆",
+                "城市的记忆",
                 "城市",
                 "从那里出发，向东方走三天，你会到达迪奥米拉，这城市有六十个银色的圆屋顶，诸神的青铜塑像，铺铅板的街道，一个水晶剧场。",
                 "http://mmbiz.qpic.cn/mmbiz_jpg/yu5zDAT988HP1ga0mPbOicibr9CPuIiaXiaA1ANB1KLH1SuaibrJvKNOkP7XauQm907FicjsHQ6sQfick4BkJjicbbby1w/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1",

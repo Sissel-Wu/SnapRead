@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,6 +16,8 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +79,14 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (presenter != null) {
+            presenter.start();
+        }
+    }
+
     private void initViews() {
         initListView();
         initRefreshLayout();
@@ -130,7 +141,10 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
         mCollectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                View sharedView = view.findViewById(R.id.type_circle);
                 CollectionListItemVO item = (CollectionListItemVO) parent.getItemAtPosition(position);
+                Gson gson = new Gson();
+                Log.d(TAG, "onItemClick: " + gson.toJson(item));
                 if (item != null) {
                     if (mCollectionListView.getChoiceMode() == AbsListView.CHOICE_MODE_MULTIPLE) {
                         CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
@@ -151,13 +165,15 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
                                     startActivity(getActivity(),
                                             item.getCollectionID(),
                                             item.getTitle(),
-                                            item.getImgUrl());
+                                            item.getImgUrl(),
+                                            sharedView);
                         } else {
                             PostActivity.
                                     startActivity(getActivity(),
                                             item.getCollectionID(),
                                             item.getTitle(),
-                                            "");
+                                            "",
+                                            sharedView);
                         }
                     }
                 }
@@ -229,9 +245,13 @@ public class CollectionFragment extends Fragment implements CollectionContract.V
 
     @Override
     public void showCollections(List<CollectionListItemVO> collectionList) {
+        List<CollectionListItemVO> invertedCollectionList = new ArrayList<>();
+        for (int i = collectionList.size() - 1; i >= 0; i--) {
+            invertedCollectionList.add(collectionList.get(i));
+        }
         if (collectionList.size() != 0) {
             noDataView.setVisibility(View.GONE);
-            collectionAdapter = new CollectionAdapter(getContext(), R.layout.collection_item, collectionList, mCollectionListView);
+            collectionAdapter = new CollectionAdapter(getContext(), R.layout.collection_item, invertedCollectionList, mCollectionListView);
             mCollectionListView.setAdapter(collectionAdapter);
         }
     }

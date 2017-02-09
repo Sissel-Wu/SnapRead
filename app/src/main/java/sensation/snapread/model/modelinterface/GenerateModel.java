@@ -6,8 +6,9 @@ import okhttp3.MultipartBody;
 import rx.Subscriber;
 import sensation.snapread.model.response.OcrResponse;
 import sensation.snapread.model.response.Response;
+import sensation.snapread.model.vopo.AddTagPO;
 import sensation.snapread.model.vopo.GeneratePO;
-import sensation.snapread.model.vopo.PostPO;
+import sensation.snapread.model.vopo.SavePostPO;
 import sensation.snapread.model.vopo.TypePO;
 
 /**
@@ -18,9 +19,9 @@ public interface GenerateModel {
 
     void getTypeList(Subscriber<Response<List<TypePO>>> subscriber, String userID);
 
-    void addType(Subscriber<Response<Object>> subscriber, String userID, String name, String description, String imageUrl);
+    void addType(Subscriber<Response<Object>> subscriber, AddTagPO addTagPO);
 
     void searchPost(Subscriber<Response<GeneratePO>> subscriber, String keyword);
 
-    void savePost(Subscriber<Response<Object>> subscriber, String userID, PostPO PostPO);
+    void savePost(Subscriber<Response<Object>> subscriber, SavePostPO savePostPO);
 }

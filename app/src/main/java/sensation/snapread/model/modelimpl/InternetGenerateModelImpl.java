@@ -1,10 +1,14 @@
 package sensation.snapread.model.modelimpl;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -19,8 +23,9 @@ import sensation.snapread.model.service.GenerateService;
 import sensation.snapread.model.service.OcrService;
 import sensation.snapread.model.service.SavePostService;
 import sensation.snapread.model.service.TagService;
+import sensation.snapread.model.vopo.AddTagPO;
 import sensation.snapread.model.vopo.GeneratePO;
-import sensation.snapread.model.vopo.PostPO;
+import sensation.snapread.model.vopo.SavePostPO;
 import sensation.snapread.model.vopo.TypePO;
 
 /**
@@ -62,9 +67,10 @@ public class InternetGenerateModelImpl extends InternetModelImpl implements Gene
     }
 
     @Override
-    public void addType(Subscriber<Response<Object>> subscriber, String userID, String name, String description, String imageUrl) {
+    public void addType(Subscriber<Response<Object>> subscriber, AddTagPO addTagPO) {
         AddTagService addTagService = retrofit.create(AddTagService.class);
-        addTagService.addTag(imageUrl, userID, name, description)
+        Gson gson = new Gson();
+        addTagService.addTag(RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson.toJson(addTagPO)))
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -83,11 +89,11 @@ public class InternetGenerateModelImpl extends InternetModelImpl implements Gene
 
 
     @Override
-    public void savePost(Subscriber<Response<Object>> subscriber, String userID, PostPO postPO) {
+    public void savePost(Subscriber<Response<Object>> subscriber, SavePostPO savePostPO) {
+        Gson gson = new Gson();
+        String savePostStr = gson.toJson(savePostPO);
         SavePostService savePostService = retrofit.create(SavePostService.class);
-        savePostService.savePost(userID, postPO.getPostID(), postPO.getTitle(),
-                postPO.getContent(), postPO.getDescription(), postPO.getUrl(), postPO.getImgUrl(),
-                postPO.getType())
+        savePostService.savePost(RequestBody.create(MediaType.parse("application/json; charset=utf-8"), savePostStr))
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

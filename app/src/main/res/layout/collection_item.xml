@@ -19,22 +19,38 @@
             android:padding="15dp">
 
             <TextView
+                android:id="@+id/type_circle"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/circle_primary"
+                android:elevation="5dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:transitionName="@string/img_transition" />
+
+            <TextView
                 android:id="@+id/tag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                android:padding="5dp"
+                android:layout_toRightOf="@+id/type_circle"
+                android:paddingLeft="5dp"
                 android:text="设计"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="17sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/share_icon"
                 android:layout_width="30dp"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_alignBottom="@+id/tag"
                 android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/tag"
-                android:padding="5dp"
                 android:src="@drawable/paper_plane" />
 
             <CheckBox

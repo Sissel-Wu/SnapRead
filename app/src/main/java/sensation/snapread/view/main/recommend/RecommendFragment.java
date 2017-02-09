@@ -121,6 +121,7 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
         mRecommendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                View sharedView = view.findViewById(R.id.type_circle);
                 CollectionListItemVO item = (CollectionListItemVO) parent.getItemAtPosition(position);
                 if (item != null) {
                     //进入文章
@@ -129,13 +130,15 @@ public class RecommendFragment extends Fragment implements RecommendContract.Vie
                                 startActivity(getActivity(),
                                         item.getCollectionID(),
                                         item.getTitle(),
-                                        item.getImgUrl());
+                                        item.getImgUrl(),
+                                        sharedView);
                     } else {
                         PostActivity.
                                 startActivity(getActivity(),
                                         item.getCollectionID(),
                                         item.getTitle(),
-                                        "");
+                                        "",
+                                        sharedView);
                     }
                 }
             }
